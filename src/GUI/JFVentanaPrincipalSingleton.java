@@ -1,9 +1,11 @@
 package GUI;
 
+import javax.swing.JInternalFrame;
+
 public class JFVentanaPrincipalSingleton extends javax.swing.JFrame {
 
     private static JFVentanaPrincipalSingleton jFVentanaPrincipalSingleton;
-    
+ 
     private JFVentanaPrincipalSingleton() {
         initComponents();
         init();
@@ -25,72 +27,177 @@ public class JFVentanaPrincipalSingleton extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jMenuBar1 = new javax.swing.JMenuBar();
+        jPanel = new javax.swing.JPanel();
+        jDesktopPane = new javax.swing.JDesktopPane();
+        jMenuBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        jMenuItemAdministrador = new javax.swing.JMenuItem();
+        jMenuExaminador = new javax.swing.JMenu();
+        jMenuItemDigitador = new javax.swing.JMenuItem();
+        jMenuItemGestor = new javax.swing.JMenuItem();
+        jMenuItemAnalista = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SISTEMA ANALIZADOR DE SITIOS WEB PARALELO");
         setResizable(false);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+        jDesktopPane.setBackground(new java.awt.Color(0, 0, 0));
+
+        javax.swing.GroupLayout jDesktopPaneLayout = new javax.swing.GroupLayout(jDesktopPane);
+        jDesktopPane.setLayout(jDesktopPaneLayout);
+        jDesktopPaneLayout.setHorizontalGroup(
+            jDesktopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 789, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 577, Short.MAX_VALUE)
+        jDesktopPaneLayout.setVerticalGroup(
+            jDesktopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 588, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jPanelLayout = new javax.swing.GroupLayout(jPanel);
+        jPanel.setLayout(jPanelLayout);
+        jPanelLayout.setHorizontalGroup(
+            jPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jDesktopPane)
+                .addContainerGap())
+        );
+        jPanelLayout.setVerticalGroup(
+            jPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jDesktopPane)
+                .addContainerGap())
         );
 
         jMenu1.setText("File");
 
-        jMenuItem2.setText("init");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItemAdministrador.setText("Administrador");
+        jMenuItemAdministrador.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                jMenuItemAdministradorActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem2);
+        jMenu1.add(jMenuItemAdministrador);
 
-        jMenuBar1.add(jMenu1);
+        jMenuExaminador.setText("Examinador");
 
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        jMenuItemDigitador.setText("Digitador");
+        jMenuItemDigitador.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemDigitadorActionPerformed(evt);
+            }
+        });
+        jMenuExaminador.add(jMenuItemDigitador);
 
-        setJMenuBar(jMenuBar1);
+        jMenuItemGestor.setText("Gestor");
+        jMenuItemGestor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemGestorActionPerformed(evt);
+            }
+        });
+        jMenuExaminador.add(jMenuItemGestor);
+
+        jMenuItemAnalista.setText("Analista");
+        jMenuItemAnalista.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemAnalistaActionPerformed(evt);
+            }
+        });
+        jMenuExaminador.add(jMenuItemAnalista);
+
+        jMenu1.add(jMenuExaminador);
+
+        jMenuBar.add(jMenu1);
+
+        setJMenuBar(jMenuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+    private void jMenuItemAdministradorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAdministradorActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+        boolean created = false;
+        for (JInternalFrame frame : this.jDesktopPane.getAllFrames()) {
+            if ((frame instanceof JIFAdministrador)) {
+                created = true;
+                break;
+            }
+        }
+        if (!created) {
+            this.jDesktopPane.add(new JIFAdministrador());
+        }
+    }//GEN-LAST:event_jMenuItemAdministradorActionPerformed
+
+    private void jMenuItemDigitadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemDigitadorActionPerformed
+        // TODO add your handling code here:
+        boolean created = false;
+        for (JInternalFrame frame : this.jDesktopPane.getAllFrames()) {
+            if ((frame instanceof JIFDigitador)) {
+                created = true;
+                break;
+            }
+        }
+        if (!created) {
+            this.jDesktopPane.add(new JIFDigitador());
+        }
+    }//GEN-LAST:event_jMenuItemDigitadorActionPerformed
+
+    private void jMenuItemGestorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemGestorActionPerformed
+        // TODO add your handling code here:
+        boolean created = false;
+        for (JInternalFrame frame : this.jDesktopPane.getAllFrames()) {
+            if ((frame instanceof JIFGestor)) {
+                created = true;
+                break;
+            }
+        }
+        if (!created) {
+            this.jDesktopPane.add(new JIFGestor());
+        }
+    }//GEN-LAST:event_jMenuItemGestorActionPerformed
+
+    private void jMenuItemAnalistaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAnalistaActionPerformed
+        // TODO add your handling code here:
+        boolean created = false;
+        for (JInternalFrame frame : this.jDesktopPane.getAllFrames()) {
+            if ((frame instanceof JIFAnalista)) {
+                created = true;
+                break;
+            }
+        }
+        if (!created) {
+            this.jDesktopPane.add(new JIFAnalista());
+        }
+    }//GEN-LAST:event_jMenuItemAnalistaActionPerformed
 
     private void init() {
+
     }//init
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JDesktopPane jDesktopPane;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JMenuBar jMenuBar;
+    private javax.swing.JMenu jMenuExaminador;
+    private javax.swing.JMenuItem jMenuItemAdministrador;
+    private javax.swing.JMenuItem jMenuItemAnalista;
+    private javax.swing.JMenuItem jMenuItemDigitador;
+    private javax.swing.JMenuItem jMenuItemGestor;
+    private javax.swing.JPanel jPanel;
     // End of variables declaration//GEN-END:variables
 }//class
