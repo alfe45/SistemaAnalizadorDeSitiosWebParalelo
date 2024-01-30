@@ -1,8 +1,6 @@
 
 package Domain;
 
-import Utility.Rol;
-
 public class UsuarioAdministrador extends Usuario{
 
     public UsuarioAdministrador(String username, String password) {
@@ -15,15 +13,13 @@ public class UsuarioAdministrador extends Usuario{
     }//darUsuarioDeBaja
     
     public boolean darUsuarioDeAlta(Usuario usuario){
-        this.asignarRol(usuario, Rol.ANALISTA);
-        
-        
         return false;
     }//darUsuarioDeAlta
     
-    public boolean asignarRol(Usuario usuario, Rol rol){
-        
-        return false;
+    public boolean asignarRol(UsuarioExaminador usuario, String rol){
+        usuario.setRol(rol);
+        return true;
     }//asignarRol
+
     
 }//class
