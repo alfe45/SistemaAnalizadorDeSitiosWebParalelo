@@ -2,7 +2,7 @@
 package Domain;
 
 
-public class Usuario {
+public abstract class Usuario {
     
     private String username;
     private String password;
