@@ -20,4 +20,7 @@ public class UsuarioExaminador extends Usuario {
     public String toString() {
         return super.toString().substring(0, super.toString().length() - 1) + ", rol=" + rol + '}';
     }
+    
+    
+    
 }//class
