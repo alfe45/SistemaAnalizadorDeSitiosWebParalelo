@@ -1,4 +1,4 @@
-package Domain;
+package Domain.Sistema;
 
 import Business.UsuarioBusiness;
 import Utility.Encryptor;
@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdom.JDOMException;
+import Domain.Analizador.AnalizadorURL;
 
 public class SistemaSingleton {
 
@@ -84,6 +85,7 @@ public class SistemaSingleton {
         if (this.usuario.tipo().equals(Utility.EXAMINADOR)) {
             if (((UsuarioExaminador) this.usuario).getRol().equals(Utility.ROL_ANALISTA)) {
                 this.analizadorURL = new AnalizadorURL();
+                this.analizadorURL.setAnalista((UsuarioExaminador) this.usuario);
                 return true;
             }
             return false;

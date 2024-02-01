@@ -1,7 +1,7 @@
 
 package Data;
 
-import Domain.Solicitud;
+import Domain.Analizador.Solicitud;
 import Utility.Utility;
 import java.io.File;
 import java.io.FileNotFoundException;

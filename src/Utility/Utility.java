@@ -19,7 +19,7 @@ public class Utility {
     public static final String ROL_DIGITADOR = "digitador";
     
 
-    public static final String EN_PROCESO = "en_proceso";
+    public static final String EN_ESPERA = "en_proceso";
     public static final String FINALIZADO = "finalizado";
     
     public static final String TAG_IMG = "img";

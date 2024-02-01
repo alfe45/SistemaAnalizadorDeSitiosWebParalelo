@@ -1,6 +1,6 @@
 package GUI;
 
-import Domain.SistemaSingleton;
+import Domain.Sistema.SistemaSingleton;
 import Utility.Utility;
 
 public class JFWindow extends javax.swing.JFrame {

@@ -1,9 +1,9 @@
 package GUI;
 
-import Domain.SistemaSingleton;
-import Domain.Usuario;
-import Domain.UsuarioAdministrador;
-import Domain.UsuarioExaminador;
+import Domain.Sistema.SistemaSingleton;
+import Domain.Sistema.Usuario;
+import Domain.Sistema.UsuarioAdministrador;
+import Domain.Sistema.UsuarioExaminador;
 import Utility.Utility;
 import java.awt.Dimension;
 
@@ -343,7 +343,7 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
 
     private void jButtonBuscarEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarEliminarActionPerformed
         // TODO add your handling code here:
-        String username = this.jTextFieldNombreUsuarioEliminar.getText();
+        String username = this.jTextFieldNombreUsuarioEliminar.getText().toLowerCase();
         if (username.equals("")) {
             actualizarListaUsuario();
             this.jListUsuarios.setEnabled(true);
