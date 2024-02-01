@@ -15,8 +15,6 @@ public class Esclavo {
         this.executorService = Executors.newFixedThreadPool(subprocesos);
 
     }
-
-    
     
     public int getSubprocesos() {
         return subprocesos;
