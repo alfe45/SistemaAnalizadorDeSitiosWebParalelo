@@ -1,5 +1,7 @@
 package Domain;
 
+import Utility.Utility;
+
 public class UsuarioExaminador extends Usuario {
 
     private String rol;
@@ -21,6 +23,9 @@ public class UsuarioExaminador extends Usuario {
         return super.toString().substring(0, super.toString().length() - 1) + ", rol=" + rol + '}';
     }
     
-    
-    
+    @Override
+    public String tipo() {
+        return Utility.EXAMINADOR;
+    }//tipo
+
 }//class

@@ -32,5 +32,7 @@ public abstract class Usuario {
     public String toString() {
         return "Usuario{" + "username=" + username + ", password=" + password + '}';
     }
+
+    public abstract String tipo();
     
 }//class

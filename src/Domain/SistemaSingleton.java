@@ -1,8 +1,11 @@
 package Domain;
 
+import Business.UsuarioBusiness;
 import Data.UsuarioData;
+import Utility.Encryptor;
 import Utility.Utility;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdom.JDOMException;
@@ -16,14 +19,14 @@ public class SistemaSingleton {
 
     private AnalizadorURL analizadorURL;
 
-    private UsuarioData usuarioData;
+    private UsuarioBusiness usuarioBusiness;
 
     private SistemaSingleton() {
         this.usuario = null;
         this.analizadorURL = null;
         try {
-            this.usuarioData = new UsuarioData();
-        } catch (JDOMException | IOException ex) {
+            this.usuarioBusiness = new UsuarioBusiness();
+        } catch (JDOMException | IOException | NoSuchAlgorithmException ex) {
             Logger.getLogger(SistemaSingleton.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -43,17 +46,17 @@ public class SistemaSingleton {
         return analizadorURL;
     }
 
-    public UsuarioData getUsuarioData() {
-        return usuarioData;
+    public UsuarioBusiness getUsuarioBusiness() {
+        return usuarioBusiness;
     }
 
-    public boolean login(String username, String password) {
+    public boolean login(String username, String password) throws NoSuchAlgorithmException {
         boolean login = false;
-        Usuario usuario = this.usuarioData.getUsuario(username);
+        Usuario usuario = this.usuarioBusiness.getUsuario(username);
         if (usuario == null) {
             return false;
         } else {
-            if (usuario.getPassword().equals(password)) {
+            if (usuario.getPassword().equals(Encryptor.encrypt(password, Encryptor.SHA256))) {
                 this.usuario = usuario;
                 return true;
             } else {
@@ -61,24 +64,24 @@ public class SistemaSingleton {
             }
         }
     }//login
-    
-    public void logOut(){
+
+    public void logOut() {
         this.usuario = null;
         this.analizadorURL = null;
     }//logOut
-    
-    public boolean UserIsLogged(){
-        return this.usuario!=null;
+
+    public boolean UserIsLogged() {
+        return this.usuario != null;
     }//isLogged
 
     @Override
     public String toString() {
-        return "SistemaSingleton{" + "usuario=" + usuario + ", analizadorURL=" + analizadorURL + ", usuarioData=" + usuarioData + '}';
+        return "SistemaSingleton{" + "usuario=" + usuario + ", analizadorURL=" + analizadorURL + ", usuarioData=" + usuarioBusiness + '}';
     }
 
     //METODOS PRIVADOS
     private boolean activarAnalizador() {
-        if (this.usuario instanceof UsuarioExaminador) {
+        if (this.usuario.tipo().equals(Utility.ADMIN)) {
             if (((UsuarioExaminador) this.usuario).getRol().equals(Utility.ROL_ANALISTA)) {
                 this.analizadorURL = new AnalizadorURL();
                 return true;

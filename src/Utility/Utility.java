@@ -47,7 +47,8 @@ public class Utility {
     
     public static final String ANALISIS_ELEMENTOS = "analisis_elementos";
     
-    
-    
+    public static final String ESTADO_PENDIENTE= "completado";
+    public static final String ESTADO_EN_EJECUCION= "en_ejecucion";
+    public static final String ESTADO_FINALIZADO = "finalizado";
     
 }//class

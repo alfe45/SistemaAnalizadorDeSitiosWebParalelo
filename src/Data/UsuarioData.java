@@ -3,11 +3,14 @@ package Data;
 import Domain.Usuario;
 import Domain.UsuarioAdministrador;
 import Domain.UsuarioExaminador;
+import Utility.Encryptor;
 import Utility.Utility;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -20,7 +23,7 @@ public class UsuarioData {
     private Document jdomDocument;
     private Element root;
 
-    public UsuarioData() throws JDOMException, IOException {
+    public UsuarioData() throws JDOMException, IOException, NoSuchAlgorithmException {
         File file = new File(Utility.RUTA_XML_USUARIOS_FILE);
         if (file.exists()) {
             SAXBuilder saxBuilder = new SAXBuilder();
@@ -35,7 +38,7 @@ public class UsuarioData {
         }//if
     }
 
-    public boolean overrideUsuario(Usuario usuario) throws IOException {
+    public boolean overrideUsuario(Usuario usuario) throws IOException, NoSuchAlgorithmException {
         if (exists(usuario.getUsername())) {
             List<Element> usuarios = this.root.getChildren();
             for (Element eUsuario : usuarios) {
@@ -48,7 +51,7 @@ public class UsuarioData {
         return false;
     }//overrideUsuario
 
-    public boolean saveNewUsuario(Usuario usuario) throws IOException {
+    public boolean saveNewUsuario(Usuario usuario) throws IOException, NoSuchAlgorithmException {
         if (!exists(usuario.getUsername())) {
             return saveUsuario(usuario);
         }
@@ -89,7 +92,7 @@ public class UsuarioData {
                                 eUsuario.getAttributeValue(Utility.USERNAME),
                                 eUsuario.getAttributeValue(Utility.PASSWORD));
                     case Utility.EXAMINADOR:
-                        UsuarioExaminador usuario = new UsuarioExaminador(eUsuario.getAttributeValue(Utility.USERNAME), 
+                        UsuarioExaminador usuario = new UsuarioExaminador(eUsuario.getAttributeValue(Utility.USERNAME),
                                 eUsuario.getAttributeValue(Utility.PASSWORD));
                         usuario.setRol(eUsuario.getChildText(Utility.ROL));
                         return usuario;
@@ -100,6 +103,38 @@ public class UsuarioData {
         }
         return null;
     }//exists
+    
+    public List<Usuario> loadUsuarios() {
+        List<Usuario> usuarios = new ArrayList<>();
+        List<Element> eUsuarios = this.root.getChildren();
+        for (Element eUsuario : eUsuarios) {
+            switch (eUsuario.getAttributeValue(Utility.TIPO_USUARIO)) {
+                case Utility.ADMIN:
+                    usuarios.add(new UsuarioAdministrador(
+                            eUsuario.getAttributeValue(Utility.USERNAME),
+                            eUsuario.getAttributeValue(Utility.PASSWORD)));
+                    break;
+                case Utility.EXAMINADOR:
+                    UsuarioExaminador usuario = new UsuarioExaminador(eUsuario.getAttributeValue(Utility.USERNAME),
+                            eUsuario.getAttributeValue(Utility.PASSWORD));
+                    usuario.setRol(eUsuario.getChildText(Utility.ROL));
+                    usuarios.add(usuario);
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+        }
+        return usuarios;
+    }//loadUsuarios
+
+    public List<String> loadNombresUsuarios() {
+        List<String> usuarios = new ArrayList<>();
+        List<Element> eUsuarios = this.root.getChildren();
+        for (Element eUsuario : eUsuarios) {
+            usuarios.add(eUsuario.getAttributeValue(Utility.USERNAME));
+        }
+        return usuarios;
+    }//loadUsuarios
 
     //METODOS PRIVADOS
     private void saveXML() throws FileNotFoundException, IOException {
@@ -107,25 +142,29 @@ public class UsuarioData {
         xmlOutputter.output(this.jdomDocument, new PrintWriter(Utility.RUTA_XML_USUARIOS_FILE));
     }//saveXML
 
-    private boolean saveUsuario(Usuario usuario) throws IOException {
+    private boolean saveUsuario(Usuario usuario) throws IOException, NoSuchAlgorithmException {
         Element eUsuario = new Element(Utility.USUARIO);
         eUsuario.setAttribute(Utility.USERNAME, usuario.getUsername().toLowerCase());
-        eUsuario.setAttribute(Utility.PASSWORD, usuario.getPassword().toLowerCase());
-        String s = "";
-        if (usuario instanceof UsuarioAdministrador) {
-            s = Utility.ADMIN;
-        } else {
-            s = Utility.EXAMINADOR;
-            Element eRol = new Element(Utility.ROL);
-            eRol.addContent(((UsuarioExaminador) usuario).getRol());
-            eUsuario.addContent(eRol);
+        String encrytedPassword = Encryptor.encrypt(usuario.getPassword(), Encryptor.SHA256);
+        eUsuario.setAttribute(Utility.PASSWORD, encrytedPassword);
+        switch (usuario.tipo()) {
+            case Utility.ADMIN:
+                eUsuario.setAttribute(Utility.TIPO_USUARIO, Utility.ADMIN);
+                break;
+            case Utility.EXAMINADOR:
+                eUsuario.setAttribute(Utility.TIPO_USUARIO, Utility.EXAMINADOR);
+                Element eRol = new Element(Utility.ROL);
+                eRol.addContent(((UsuarioExaminador) usuario).getRol());
+                eUsuario.addContent(eRol);
+                break;
+            default:
+                throw new AssertionError();
         }
-        eUsuario.setAttribute(Utility.TIPO_USUARIO, s);
-
         this.root.addContent(eUsuario);
-
         saveXML();
         return true;
     }//saveUsuario
+
+    
 
 }//class

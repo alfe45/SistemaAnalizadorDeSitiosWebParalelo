@@ -1,5 +1,6 @@
 package GUI;
 
+import Domain.SistemaSingleton;
 import Utility.Utility;
 
 public class JFWindow extends javax.swing.JFrame {
@@ -30,7 +31,10 @@ public class JFWindow extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuFile = new javax.swing.JMenu();
         jMenuItemGestionUsuarios = new javax.swing.JMenuItem();
-        jMenuItemCrearSolicitudAnalisis = new javax.swing.JMenuItem();
+        jMenuItemCrearSolicitud = new javax.swing.JMenuItem();
+        jMenuItemGestionAnalisis = new javax.swing.JMenuItem();
+        jMenuItemGestionSolicitudes = new javax.swing.JMenuItem();
+        jMenuItemLogOut = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Analizador de Sitios Web Paralelo");
@@ -46,8 +50,37 @@ public class JFWindow extends javax.swing.JFrame {
         });
         jMenuFile.add(jMenuItemGestionUsuarios);
 
-        jMenuItemCrearSolicitudAnalisis.setText("Crear Solicitud de Análisis");
-        jMenuFile.add(jMenuItemCrearSolicitudAnalisis);
+        jMenuItemCrearSolicitud.setText("Crear Solicitud de Análisis");
+        jMenuItemCrearSolicitud.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemCrearSolicitudActionPerformed(evt);
+            }
+        });
+        jMenuFile.add(jMenuItemCrearSolicitud);
+
+        jMenuItemGestionAnalisis.setText("Gestión de Análisis");
+        jMenuItemGestionAnalisis.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemGestionAnalisisActionPerformed(evt);
+            }
+        });
+        jMenuFile.add(jMenuItemGestionAnalisis);
+
+        jMenuItemGestionSolicitudes.setText("Gestión de Solicitudes");
+        jMenuItemGestionSolicitudes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemGestionSolicitudesActionPerformed(evt);
+            }
+        });
+        jMenuFile.add(jMenuItemGestionSolicitudes);
+
+        jMenuItemLogOut.setText("Log out");
+        jMenuItemLogOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemLogOutActionPerformed(evt);
+            }
+        });
+        jMenuFile.add(jMenuItemLogOut);
 
         jMenuBar1.add(jMenuFile);
 
@@ -69,14 +102,46 @@ public class JFWindow extends javax.swing.JFrame {
 
     private void jMenuItemGestionUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemGestionUsuariosActionPerformed
         // TODO add your handling code here:
+        JFWindow.getInstance().jMenuItemGestionUsuarios.setEnabled(false);
         this.add(new JIFAdministrador());
     }//GEN-LAST:event_jMenuItemGestionUsuariosActionPerformed
+
+    private void jMenuItemCrearSolicitudActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemCrearSolicitudActionPerformed
+        // TODO add your handling code here:
+        jMenuItemCrearSolicitud.setEnabled(false);
+        this.add(new JIFDigitador());
+    }//GEN-LAST:event_jMenuItemCrearSolicitudActionPerformed
+
+    private void jMenuItemGestionAnalisisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemGestionAnalisisActionPerformed
+        // TODO add your handling code here:
+        JFWindow.getInstance().jMenuItemGestionAnalisis.setEnabled(false);
+        this.add(new JIFAnalista());
+    }//GEN-LAST:event_jMenuItemGestionAnalisisActionPerformed
+
+    private void jMenuItemGestionSolicitudesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemGestionSolicitudesActionPerformed
+        // TODO add your handling code here:
+        JFWindow.getInstance().jMenuItemGestionSolicitudes.setEnabled(false);
+        this.add(new JIFGestor());
+    }//GEN-LAST:event_jMenuItemGestionSolicitudesActionPerformed
+
+    private void jMenuItemLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLogOutActionPerformed
+        // TODO add your handling code here:
+        this.add(this.jMenuBar1);
+        this.jMenuBar1.setVisible(false);
+        SistemaSingleton.getInstance().logOut();
+        this.add(new JPLogin());  
+        JFWindow.getInstance().setTitle("Analizador de Sitios Web Paralelo");
+        this.repaint();
+    }//GEN-LAST:event_jMenuItemLogOutActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     protected javax.swing.JMenuBar jMenuBar1;
     protected javax.swing.JMenu jMenuFile;
-    private javax.swing.JMenuItem jMenuItemCrearSolicitudAnalisis;
+    protected javax.swing.JMenuItem jMenuItemCrearSolicitud;
+    protected javax.swing.JMenuItem jMenuItemGestionAnalisis;
+    protected javax.swing.JMenuItem jMenuItemGestionSolicitudes;
     protected javax.swing.JMenuItem jMenuItemGestionUsuarios;
+    protected javax.swing.JMenuItem jMenuItemLogOut;
     // End of variables declaration//GEN-END:variables
 
     private void init() {
@@ -86,26 +151,23 @@ public class JFWindow extends javax.swing.JFrame {
     }//init
 
     public void administradorGUI() {
-        this.jMenuBar1.setVisible(true);
         this.jMenuBar1.getMenu(this.jMenuBar1.getComponentIndex(this.jMenuFile)).add(this.jMenuItemGestionUsuarios);
     }//administradorGUI
 
     public void examinadorGUI(String rol) {
-
         switch (rol) {
             case Utility.ROL_DIGITADOR:
-                this.jMenuBar1.getMenu(this.jMenuBar1.getComponentIndex(this.jMenuFile)).add(this.jMenuItemCrearSolicitudAnalisis);
+                this.jMenuBar1.getMenu(this.jMenuBar1.getComponentIndex(this.jMenuFile)).add(this.jMenuItemCrearSolicitud);
                 break;
             case Utility.ROL_GESTOR:
-
+                this.jMenuBar1.getMenu(this.jMenuBar1.getComponentIndex(this.jMenuFile)).add(this.jMenuItemGestionSolicitudes);
                 break;
             case Utility.ROL_ANALISTA:
-
+                this.jMenuBar1.getMenu(this.jMenuBar1.getComponentIndex(this.jMenuFile)).add(this.jMenuItemGestionAnalisis);
                 break;
             default:
                 throw new AssertionError();
         }
-
     }//examinadorGUI
 
 }//class
