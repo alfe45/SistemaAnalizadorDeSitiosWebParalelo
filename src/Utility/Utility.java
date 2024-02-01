@@ -3,6 +3,7 @@ package Utility;
 public class Utility {
 
     public static final String RUTA_XML_USUARIOS_FILE = "usuarios.xml";
+    public static final String RUTA_XML_SOLICITUDES_FILE = "solicitudes.xml";
     
     public static final String USUARIOS = "usuarios";
     public static final String USUARIO = "usuario";
@@ -18,7 +19,7 @@ public class Utility {
     public static final String ROL_DIGITADOR = "digitador";
     
 
-    public static final String EN_PROCESO = "en_proceso";
+    public static final String EN_ESPERA = "en_proceso";
     public static final String FINALIZADO = "finalizado";
     
     public static final String TAG_IMG = "img";

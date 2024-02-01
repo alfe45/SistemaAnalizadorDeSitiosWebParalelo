@@ -1,6 +1,5 @@
 
-package Domain;
-
+package Domain.Sistema;
 
 public abstract class Usuario {
     

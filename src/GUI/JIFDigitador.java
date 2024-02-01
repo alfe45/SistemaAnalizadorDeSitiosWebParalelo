@@ -1,7 +1,8 @@
 
 package GUI;
 
-import Domain.Solicitud;
+import Domain.Sistema.SistemaSingleton;
+import Domain.Analizador.Solicitud;
 import java.awt.Dimension;
 
 public class JIFDigitador extends javax.swing.JInternalFrame {
@@ -147,7 +148,7 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 454, Short.MAX_VALUE)
+                        .addGap(6, 454, Short.MAX_VALUE)
                         .addComponent(jButton1))
                     .addComponent(jScrollPane1))
                 .addContainerGap())
@@ -205,12 +206,13 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
 
     private void jButtonEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnviarActionPerformed
         // TODO add your handling code here:
-
+     
         Solicitud solicitud = new Solicitud(
             this.jTextFieldURL.getText(),
             this.jCheckBox1.isSelected(),
             this.jCheckBox2.isSelected(),
             this.jCheckBox3.isSelected());
+        
         
         
         System.out.println("Nueva Solicitud: " +solicitud);

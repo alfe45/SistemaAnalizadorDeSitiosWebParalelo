@@ -1,27 +1,38 @@
-
-package Domain;
+package Domain.Analizador;
 
 import Utility.Utility;
-import java.util.ArrayList;
 
 public class Solicitud {
-    
+
     private String url;
-    private ArrayList<Analisis> analisis;
     private int porcentajeAvance;
     private String estado;
+    private boolean[] analisis;
 
     public Solicitud(String url, boolean analisis1, boolean analisis2, boolean analisis3) {
         this.url = url;
         this.porcentajeAvance = 0;
-        this.estado = Utility.EN_PROCESO;
-    }
-    public String getUrl() {
-        return url;
+        this.estado = Utility.EN_ESPERA;
+        this.analisis = new boolean[3];
+        this.analisis[0] = analisis1;
+        this.analisis[1] = analisis2;
+        this.analisis[2] = analisis3;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public boolean doAnalisis1() {
+        return this.analisis[0];
+    }
+
+    public boolean doAnalisis2() {
+        return this.analisis[1];
+    }
+
+    public boolean doAnalisis3() {
+        return this.analisis[2];
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     public int getPorcentajeAvance() {
@@ -39,5 +50,7 @@ public class Solicitud {
     public void setEstado(String estado) {
         this.estado = estado;
     }
+
+
 
 }//class

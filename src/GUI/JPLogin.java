@@ -1,8 +1,8 @@
 package GUI;
 
-import Domain.SistemaSingleton;
-import Domain.UsuarioAdministrador;
-import Domain.UsuarioExaminador;
+import Utility.Utility;
+import Domain.Sistema.SistemaSingleton;
+import Domain.Sistema.UsuarioExaminador;
 import java.awt.Color;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
@@ -160,7 +160,7 @@ public class JPLogin extends javax.swing.JPanel {
                             jLabelInfoLogin.setText("Loading...");
                             Thread.sleep(n);
                             if (logged) {
-                                if (SistemaSingleton.getInstance().getUsuario() instanceof UsuarioAdministrador) {
+                                if (SistemaSingleton.getInstance().getUsuario().tipo().equals(Utility.ADMIN)) {
                                     JFWindow.getInstance().administradorGUI();
                                 } else {
                                     String rol = ((UsuarioExaminador) SistemaSingleton.getInstance().getUsuario()).getRol();

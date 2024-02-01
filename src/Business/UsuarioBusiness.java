@@ -2,7 +2,7 @@
 package Business;
 
 import Data.UsuarioData;
-import Domain.Usuario;
+import Domain.Sistema.Usuario;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;

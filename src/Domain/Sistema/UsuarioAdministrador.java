@@ -1,6 +1,7 @@
 
-package Domain;
+package Domain.Sistema;
 
+import Domain.Sistema.UsuarioExaminador;
 import Utility.Utility;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;

@@ -1,7 +1,6 @@
-package Domain;
+package Domain.Sistema;
 
 import Business.UsuarioBusiness;
-import Data.UsuarioData;
 import Utility.Encryptor;
 import Utility.Utility;
 import java.io.IOException;
@@ -9,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdom.JDOMException;
+import Domain.Analizador.AnalizadorURL;
 
 public class SistemaSingleton {
 
@@ -58,6 +58,7 @@ public class SistemaSingleton {
         } else {
             if (usuario.getPassword().equals(Encryptor.encrypt(password, Encryptor.SHA256))) {
                 this.usuario = usuario;
+                System.out.println("Sistema analizador activado: "+activarAnalizadorURL());
                 return true;
             } else {
                 return false;
@@ -80,10 +81,11 @@ public class SistemaSingleton {
     }
 
     //METODOS PRIVADOS
-    private boolean activarAnalizador() {
-        if (this.usuario.tipo().equals(Utility.ADMIN)) {
+    private boolean activarAnalizadorURL() {
+        if (this.usuario.tipo().equals(Utility.EXAMINADOR)) {
             if (((UsuarioExaminador) this.usuario).getRol().equals(Utility.ROL_ANALISTA)) {
                 this.analizadorURL = new AnalizadorURL();
+                this.analizadorURL.setAnalista((UsuarioExaminador) this.usuario);
                 return true;
             }
             return false;

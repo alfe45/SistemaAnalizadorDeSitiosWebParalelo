@@ -1,8 +1,8 @@
 package Data;
 
-import Domain.Usuario;
-import Domain.UsuarioAdministrador;
-import Domain.UsuarioExaminador;
+import Domain.Sistema.Usuario;
+import Domain.Sistema.UsuarioAdministrador;
+import Domain.Sistema.UsuarioExaminador;
 import Utility.Encryptor;
 import Utility.Utility;
 import java.io.File;
