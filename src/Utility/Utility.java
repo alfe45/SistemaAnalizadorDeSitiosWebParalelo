@@ -3,6 +3,7 @@ package Utility;
 public class Utility {
 
     public static final String RUTA_XML_USUARIOS_FILE = "usuarios.xml";
+    public static final String RUTA_XML_SOLICITUDES_FILE = "solicitudes.xml";
     
     public static final String USUARIOS = "usuarios";
     public static final String USUARIO = "usuario";

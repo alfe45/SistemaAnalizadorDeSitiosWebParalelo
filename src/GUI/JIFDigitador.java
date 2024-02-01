@@ -1,6 +1,7 @@
 
 package GUI;
 
+import Domain.SistemaSingleton;
 import Domain.Solicitud;
 import java.awt.Dimension;
 
@@ -205,12 +206,13 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
 
     private void jButtonEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnviarActionPerformed
         // TODO add your handling code here:
-
+     
         Solicitud solicitud = new Solicitud(
             this.jTextFieldURL.getText(),
             this.jCheckBox1.isSelected(),
             this.jCheckBox2.isSelected(),
             this.jCheckBox3.isSelected());
+        
         
         
         System.out.println("Nueva Solicitud: " +solicitud);
