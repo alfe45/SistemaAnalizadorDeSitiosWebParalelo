@@ -1,5 +1,15 @@
-
 package GUI;
+
+import Domain.SistemaSingleton;
+import Domain.Usuario;
+import Domain.UsuarioAdministrador;
+import Domain.UsuarioExaminador;
+import Utility.Utility;
+import java.awt.Color;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class JIFAdministrador extends javax.swing.JInternalFrame {
 
     public JIFAdministrador() {
@@ -23,6 +33,10 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
         jLabelUsernameRegistrar = new javax.swing.JLabel();
         jLabelPasswordRegistrar = new javax.swing.JLabel();
         jButtonRegistrarUsuario = new javax.swing.JButton();
+        jComboBoxRol = new javax.swing.JComboBox<>();
+        jCheckBoxAdmin = new javax.swing.JCheckBox();
+        jLabelRol = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
         jPanelEliminarUsuario = new javax.swing.JPanel();
         jTextFieldNombreUsuarioEliminar = new javax.swing.JTextField();
         jButtonBuscarEliminar = new javax.swing.JButton();
@@ -43,6 +57,28 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
         jLabelPasswordRegistrar.setText("Password:");
 
         jButtonRegistrarUsuario.setText("Registrar");
+        jButtonRegistrarUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRegistrarUsuarioActionPerformed(evt);
+            }
+        });
+
+        jComboBoxRol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { Utility.ROL_DIGITADOR, Utility.ROL_GESTOR, Utility.ROL_ANALISTA}));
+
+        jCheckBoxAdmin.setText("ADMIN");
+        jCheckBoxAdmin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jCheckBoxAdminMouseClicked(evt);
+            }
+        });
+        jCheckBoxAdmin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxAdminActionPerformed(evt);
+            }
+        });
+
+        jLabelRol.setForeground(new java.awt.Color(0, 0, 0));
+        jLabelRol.setText("Rol:");
 
         javax.swing.GroupLayout RegistrarUsuarioLayout = new javax.swing.GroupLayout(RegistrarUsuario);
         RegistrarUsuario.setLayout(RegistrarUsuarioLayout);
@@ -51,17 +87,25 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
             .addGroup(RegistrarUsuarioLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RegistrarUsuarioLayout.createSequentialGroup()
                         .addComponent(jLabelUsernameRegistrar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 163, Short.MAX_VALUE)
                         .addComponent(jTextFieldNombreUsuarioRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RegistrarUsuarioLayout.createSequentialGroup()
-                        .addComponent(jLabelPasswordRegistrar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTextFieldPasswordRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RegistrarUsuarioLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonRegistrarUsuario)))
+                        .addComponent(jButtonRegistrarUsuario))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RegistrarUsuarioLayout.createSequentialGroup()
+                        .addComponent(jLabelPasswordRegistrar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 166, Short.MAX_VALUE)
+                        .addGroup(RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCheckBoxAdmin)
+                            .addComponent(jTextFieldPasswordRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(RegistrarUsuarioLayout.createSequentialGroup()
+                        .addComponent(jLabelRol)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jComboBoxRol, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(145, 145, 145)))
                 .addContainerGap())
         );
         RegistrarUsuarioLayout.setVerticalGroup(
@@ -75,7 +119,15 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
                 .addGroup(RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldPasswordRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabelPasswordRegistrar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 232, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jCheckBoxAdmin)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelRol)
+                    .addComponent(jComboBoxRol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 162, Short.MAX_VALUE)
                 .addComponent(jButtonRegistrarUsuario)
                 .addContainerGap())
         );
@@ -130,7 +182,7 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -155,17 +207,70 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButtonRegistrarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegistrarUsuarioActionPerformed
+        // TODO add your handling code here:
+        String username = this.jTextFieldNombreUsuarioRegistrar.getText();
+        String password = this.jTextFieldPasswordRegistrar.getText();
+
+        if (username.equals("") || password.equals("")) {
+            System.out.println("campos vacios");
+        } else {
+            if (!SistemaSingleton.getInstance().getUsuarioData().exists(username)) {
+                Usuario usuario = null;
+                if (this.jCheckBoxAdmin.isSelected()) {
+                    usuario = new UsuarioAdministrador(username, password);
+
+                } else {
+                    usuario = new UsuarioExaminador(username, password);
+                    ((UsuarioAdministrador) SistemaSingleton.getInstance().getUsuario()).asignarRol((UsuarioExaminador) usuario, this.jComboBoxRol.getSelectedItem().toString());
+                }
+                try {
+                    SistemaSingleton.getInstance().getUsuarioData().saveNewUsuario(usuario);
+                } catch (IOException ex) {
+                    Logger.getLogger(JIFAdministrador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                this.jTextFieldNombreUsuarioRegistrar.setText("");
+                this.jTextFieldPasswordRegistrar.setText("");
+                this.jComboBoxRol.setSelectedIndex(0);
+                this.jCheckBoxAdmin.setSelected(false);
+                System.out.println("Usuario guardado: "+ usuario.toString());
+            } else {
+                System.out.println("el usuario ya existe");
+            }
+        }
+    }//GEN-LAST:event_jButtonRegistrarUsuarioActionPerformed
+
+    private void jCheckBoxAdminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBoxAdminMouseClicked
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_jCheckBoxAdminMouseClicked
+
+    private void jCheckBoxAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxAdminActionPerformed
+        // TODO add your handling code here:
+        if (jCheckBoxAdmin.isSelected()) {
+            this.jComboBoxRol.setVisible(false);
+            this.jLabelRol.setVisible(false);
+        } else {
+            this.jComboBoxRol.setVisible(true);
+            this.jLabelRol.setVisible(true);
+        }
+    }//GEN-LAST:event_jCheckBoxAdminActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel RegistrarUsuario;
     private javax.swing.JButton jButtonBuscarEliminar;
     private javax.swing.JButton jButtonEliminarUsuario;
     private javax.swing.JButton jButtonRegistrarUsuario;
+    private javax.swing.JCheckBox jCheckBoxAdmin;
+    private javax.swing.JComboBox<String> jComboBoxRol;
     private javax.swing.JLabel jLabelPasswordRegistrar;
+    private javax.swing.JLabel jLabelRol;
     private javax.swing.JLabel jLabelUsernameEliminar;
     private javax.swing.JLabel jLabelUsernameRegistrar;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelEliminarUsuario;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextFieldNombreUsuarioEliminar;
     private javax.swing.JTextField jTextFieldNombreUsuarioRegistrar;

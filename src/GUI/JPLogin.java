@@ -1,17 +1,20 @@
-
 package GUI;
 
-import Domain.Usuario;
+import Domain.SistemaSingleton;
 import Domain.UsuarioAdministrador;
-
+import Domain.UsuarioExaminador;
+import Utility.Utility;
+import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeListener;
+import javax.swing.Action;
+import javax.swing.JMenuItem;
 
 public class JPLogin extends javax.swing.JPanel {
 
-    /**
-     * Creates new form JPLogin
-     */
     public JPLogin() {
         initComponents();
+        this.setBounds(0, 0, 800, 600);
+        this.setVisible(true);
     }
 
     /**
@@ -90,13 +93,21 @@ public class JPLogin extends javax.swing.JPanel {
         // TODO add your handling code here:
         String username = this.jTextFieldNombreUsuario.getText();
         String password = this.jTextFieldPassword.getText();
-        Usuario usuario = new UsuarioAdministrador(username, password);
-        System.out.println(usuario);
-        
-        JFVentanaPrincipalSingleton.getInstance().remove(this);
-        JFVentanaPrincipalSingleton.getInstance().add(new JPMenuPrincipal());
+        boolean logged = SistemaSingleton.getInstance().login(username, password);
+        if (logged) {
+            if (SistemaSingleton.getInstance().getUsuario() instanceof UsuarioAdministrador) {
+                JFWindow.getInstance().administradorGUI();
+            } else {
+                String rol = ((UsuarioExaminador)SistemaSingleton.getInstance().getUsuario()).getRol();
+                JFWindow.getInstance().examinadorGUI(rol);
+            }
+            JFWindow.getInstance().remove(this);
+            JFWindow.getInstance().repaint();
+        } else {
+            //decir que no se loggeo
+            System.out.println("Usuario no logeado");
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -105,4 +116,4 @@ public class JPLogin extends javax.swing.JPanel {
     private javax.swing.JTextField jTextFieldNombreUsuario;
     private javax.swing.JTextField jTextFieldPassword;
     // End of variables declaration//GEN-END:variables
-}
+}//class

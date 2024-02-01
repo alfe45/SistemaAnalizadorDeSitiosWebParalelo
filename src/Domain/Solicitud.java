@@ -1,10 +1,14 @@
 
 package Domain;
 
+import Utility.Utility;
+
 public class Solicitud {
     
     private String url;
     private boolean[] tipoAnalisis;
+    private int porcentajeAvance;
+    private String estado;
 
     public Solicitud(String url, boolean analisis1, boolean analisis2, boolean analisis3) {
         this.url = url;
@@ -12,6 +16,8 @@ public class Solicitud {
         this.tipoAnalisis[0] = analisis1;
         this.tipoAnalisis[1] = analisis2;
         this.tipoAnalisis[2] = analisis3;
+        this.porcentajeAvance = 0;
+        this.estado = Utility.EN_PROCESO;
     }
     public String getUrl() {
         return url;
@@ -29,11 +35,26 @@ public class Solicitud {
         this.tipoAnalisis = tipoAnalisis;
     }
 
+    public int getPorcentajeAvance() {
+        return porcentajeAvance;
+    }
+
+    public void setPorcentajeAvance(int porcentajeAvance) {
+        this.porcentajeAvance = porcentajeAvance;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
     @Override
     public String toString() {
-        return "URL = '"+url+"' ; ANALISIS1= "+tipoAnalisis[0]
-                +", ANALISIS2= "+tipoAnalisis[1]
-                +", ANALISIS3= "+tipoAnalisis[2];
+        return "Solicitud{" + "url=" + url + ", tipoAnalisis=" + tipoAnalisis + ", porcentajeAvance=" + porcentajeAvance + ", estado=" + estado + '}';
     }
-      
+    
+
 }//class
