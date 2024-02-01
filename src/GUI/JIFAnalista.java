@@ -1,20 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
- */
+
 package GUI;
 
-/**
- *
- * @author Alxander Fernandez
- */
+import java.awt.Dimension;
+
 public class JIFAnalista extends javax.swing.JInternalFrame {
 
-    /**
-     * Creates new form JIFAnalista
-     */
     public JIFAnalista() {
         initComponents();
+        Dimension jfSize = JFWindow.getInstance().getSize();
+        Dimension jifSize = this.getSize();
+        this.setLocation((jfSize.width - jifSize.width) / 2, (((jfSize.height-JFWindow.getInstance().jMenuBar1.getHeight()) - jifSize.height) / 2));
+        this.show();
     }
 
     /**
@@ -32,6 +28,23 @@ public class JIFAnalista extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setTitle("Analista");
         setVisible(true);
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameClosed(evt);
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -60,8 +73,12 @@ public class JIFAnalista extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formInternalFrameClosed(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosed
+        // TODO add your handling code here:
+        JFWindow.getInstance().jMenuItemGestionAnalisis.setEnabled(true);
+    }//GEN-LAST:event_formInternalFrameClosed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
-}
+}//class

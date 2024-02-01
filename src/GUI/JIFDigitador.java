@@ -1,22 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
- */
+
 package GUI;
 
 import Domain.Solicitud;
+import java.awt.Dimension;
 
-/**
- *
- * @author Alxander Fernandez
- */
 public class JIFDigitador extends javax.swing.JInternalFrame {
 
-    /**
-     * Creates new form JIFDigitador
-     */
     public JIFDigitador() {
         initComponents();
+        Dimension jfSize = JFWindow.getInstance().getSize();
+        Dimension jifSize = this.getSize();
+        this.setLocation((jfSize.width - jifSize.width) / 2, (((jfSize.height-JFWindow.getInstance().jMenuBar1.getHeight()) - jifSize.height) / 2));
+        this.show();
     }
 
     /**
@@ -46,6 +41,23 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setTitle("Digitador");
         setVisible(true);
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameClosed(evt);
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -199,9 +211,16 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
             this.jCheckBox1.isSelected(),
             this.jCheckBox2.isSelected(),
             this.jCheckBox3.isSelected());
+        
+        
         System.out.println("Nueva Solicitud: " +solicitud);
 
     }//GEN-LAST:event_jButtonEnviarActionPerformed
+
+    private void formInternalFrameClosed(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosed
+        // TODO add your handling code here:
+        JFWindow.getInstance().jMenuItemCrearSolicitud.setEnabled(true);
+    }//GEN-LAST:event_formInternalFrameClosed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -219,4 +238,4 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextFieldURL;
     // End of variables declaration//GEN-END:variables
-}
+}//class

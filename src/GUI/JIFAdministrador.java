@@ -1,9 +1,27 @@
-
 package GUI;
+
+import Domain.SistemaSingleton;
+import Domain.Usuario;
+import Domain.UsuarioAdministrador;
+import Domain.UsuarioExaminador;
+import Utility.Utility;
+import java.awt.Dimension;
+
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 public class JIFAdministrador extends javax.swing.JInternalFrame {
 
     public JIFAdministrador() {
         initComponents();
+        Dimension jfSize = JFWindow.getInstance().getSize();
+        Dimension jifSize = this.getSize();
+        this.setLocation((jfSize.width - jifSize.width) / 2, (((jfSize.height-JFWindow.getInstance().jMenuBar1.getHeight()) - jifSize.height) / 2));
+        this.show();
     }
 
     /**
@@ -23,16 +41,40 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
         jLabelUsernameRegistrar = new javax.swing.JLabel();
         jLabelPasswordRegistrar = new javax.swing.JLabel();
         jButtonRegistrarUsuario = new javax.swing.JButton();
+        jComboBoxRol = new javax.swing.JComboBox<>();
+        jCheckBoxAdmin = new javax.swing.JCheckBox();
+        jLabelRol = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
         jPanelEliminarUsuario = new javax.swing.JPanel();
         jTextFieldNombreUsuarioEliminar = new javax.swing.JTextField();
         jButtonBuscarEliminar = new javax.swing.JButton();
         jButtonEliminarUsuario = new javax.swing.JButton();
         jLabelUsernameEliminar = new javax.swing.JLabel();
+        jSeparator2 = new javax.swing.JSeparator();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jListUsuarios = new javax.swing.JList<>();
 
         setClosable(true);
         setIconifiable(true);
-        setTitle("Administrador");
+        setTitle("Gestión de Usuarios");
         setVisible(true);
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameClosed(evt);
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -43,6 +85,28 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
         jLabelPasswordRegistrar.setText("Password:");
 
         jButtonRegistrarUsuario.setText("Registrar");
+        jButtonRegistrarUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRegistrarUsuarioActionPerformed(evt);
+            }
+        });
+
+        jComboBoxRol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { Utility.ROL_DIGITADOR, Utility.ROL_GESTOR, Utility.ROL_ANALISTA}));
+
+        jCheckBoxAdmin.setText("ADMIN");
+        jCheckBoxAdmin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jCheckBoxAdminMouseClicked(evt);
+            }
+        });
+        jCheckBoxAdmin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxAdminActionPerformed(evt);
+            }
+        });
+
+        jLabelRol.setForeground(new java.awt.Color(0, 0, 0));
+        jLabelRol.setText("Rol:");
 
         javax.swing.GroupLayout RegistrarUsuarioLayout = new javax.swing.GroupLayout(RegistrarUsuario);
         RegistrarUsuario.setLayout(RegistrarUsuarioLayout);
@@ -51,17 +115,25 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
             .addGroup(RegistrarUsuarioLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RegistrarUsuarioLayout.createSequentialGroup()
                         .addComponent(jLabelUsernameRegistrar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 163, Short.MAX_VALUE)
                         .addComponent(jTextFieldNombreUsuarioRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RegistrarUsuarioLayout.createSequentialGroup()
-                        .addComponent(jLabelPasswordRegistrar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTextFieldPasswordRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RegistrarUsuarioLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonRegistrarUsuario)))
+                        .addComponent(jButtonRegistrarUsuario))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RegistrarUsuarioLayout.createSequentialGroup()
+                        .addComponent(jLabelPasswordRegistrar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 166, Short.MAX_VALUE)
+                        .addGroup(RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCheckBoxAdmin)
+                            .addComponent(jTextFieldPasswordRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(RegistrarUsuarioLayout.createSequentialGroup()
+                        .addComponent(jLabelRol)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jComboBoxRol, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(145, 145, 145)))
                 .addContainerGap())
         );
         RegistrarUsuarioLayout.setVerticalGroup(
@@ -75,7 +147,15 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
                 .addGroup(RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldPasswordRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabelPasswordRegistrar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 232, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jCheckBoxAdmin)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelRol)
+                    .addComponent(jComboBoxRol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 162, Short.MAX_VALUE)
                 .addComponent(jButtonRegistrarUsuario)
                 .addContainerGap())
         );
@@ -83,12 +163,30 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
         jTabbedPane1.addTab("Registrar Usuario", RegistrarUsuario);
 
         jButtonBuscarEliminar.setText("Buscar");
+        jButtonBuscarEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBuscarEliminarActionPerformed(evt);
+            }
+        });
 
         jButtonEliminarUsuario.setText("Eliminar");
         jButtonEliminarUsuario.setEnabled(false);
+        jButtonEliminarUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEliminarUsuarioActionPerformed(evt);
+            }
+        });
 
         jLabelUsernameEliminar.setForeground(new java.awt.Color(0, 0, 0));
         jLabelUsernameEliminar.setText("Username:");
+
+        jListUsuarios.setEnabled(false);
+        jListUsuarios.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jListUsuariosValueChanged(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jListUsuarios);
 
         javax.swing.GroupLayout jPanelEliminarUsuarioLayout = new javax.swing.GroupLayout(jPanelEliminarUsuario);
         jPanelEliminarUsuario.setLayout(jPanelEliminarUsuarioLayout);
@@ -100,12 +198,14 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelEliminarUsuarioLayout.createSequentialGroup()
                         .addComponent(jLabelUsernameEliminar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 163, Short.MAX_VALUE)
-                        .addComponent(jTextFieldNombreUsuarioEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanelEliminarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButtonBuscarEliminar, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jTextFieldNombreUsuarioEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelEliminarUsuarioLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(jPanelEliminarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButtonEliminarUsuario, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButtonBuscarEliminar, javax.swing.GroupLayout.Alignment.TRAILING))))
+                        .addComponent(jButtonEliminarUsuario))
+                    .addComponent(jSeparator2)
+                    .addComponent(jScrollPane1))
                 .addContainerGap())
         );
         jPanelEliminarUsuarioLayout.setVerticalGroup(
@@ -117,7 +217,11 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
                     .addComponent(jLabelUsernameEliminar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonBuscarEliminar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 231, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(jButtonEliminarUsuario)
                 .addContainerGap())
         );
@@ -130,7 +234,7 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -152,8 +256,157 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+        getAccessibleContext().setAccessibleName("Administrador: ");
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButtonRegistrarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegistrarUsuarioActionPerformed
+        // TODO add your handling code here:
+        String username = this.jTextFieldNombreUsuarioRegistrar.getText();
+        String password = this.jTextFieldPasswordRegistrar.getText();
+
+        if (username.equals("") || password.equals("")) {
+            JOptionPane.showMessageDialog(this, "Campos vacíos", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            if (!SistemaSingleton.getInstance().getUsuarioBusiness().exists(username)) {
+                Usuario usuario = null;
+                if (this.jCheckBoxAdmin.isSelected()) {
+                    usuario = new UsuarioAdministrador(username, password);
+                } else {
+                    usuario = new UsuarioExaminador(username, password);
+                    ((UsuarioAdministrador) SistemaSingleton.getInstance().getUsuario()).asignarRol((UsuarioExaminador) usuario, this.jComboBoxRol.getSelectedItem().toString());
+                }
+                try {
+                    try {
+                        if (SistemaSingleton.getInstance().getUsuarioBusiness().saveNewUsuario(usuario)) {
+                            JOptionPane.showMessageDialog(this, "Usuario registrado con exito", "Exito", JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Usuario no registrado", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } catch (NoSuchAlgorithmException ex) {
+                        Logger.getLogger(JIFAdministrador.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(JIFAdministrador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                this.jTextFieldNombreUsuarioRegistrar.setText("");
+                this.jTextFieldPasswordRegistrar.setText("");
+                this.jComboBoxRol.setSelectedIndex(0);
+                this.jCheckBoxAdmin.setSelected(false);
+                this.jComboBoxRol.setVisible(true);
+                this.jLabelRol.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Nombre de usuario no disponible", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_jButtonRegistrarUsuarioActionPerformed
+
+    private void jCheckBoxAdminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBoxAdminMouseClicked
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_jCheckBoxAdminMouseClicked
+
+    private void jCheckBoxAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxAdminActionPerformed
+        // TODO add your handling code here:
+        if (jCheckBoxAdmin.isSelected()) {
+            this.jComboBoxRol.setVisible(false);
+            this.jLabelRol.setVisible(false);
+        } else {
+            this.jComboBoxRol.setVisible(true);
+            this.jLabelRol.setVisible(true);
+        }
+    }//GEN-LAST:event_jCheckBoxAdminActionPerformed
+
+    private void jButtonEliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarUsuarioActionPerformed
+        // TODO add your handling code here:
+
+        String username = this.jListUsuarios.getSelectedValue();
+
+        if (!username.equals("")) {
+            try {
+                if (SistemaSingleton.getInstance().getUsuarioBusiness().deleteUsuario(username)) {
+                    JOptionPane.showMessageDialog(this, "Usuario eliminado", "Exito", JOptionPane.INFORMATION_MESSAGE);
+                    this.jTextFieldNombreUsuarioEliminar.setText("");
+                    limpiarListaUsuarios();
+                    this.jButtonEliminarUsuario.setEnabled(false);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Error al eliminar el usuario", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(JIFAdministrador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Seleccione un usuario", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_jButtonEliminarUsuarioActionPerformed
+
+    private void jButtonBuscarEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarEliminarActionPerformed
+        // TODO add your handling code here:
+        String username = this.jTextFieldNombreUsuarioEliminar.getText();
+        if (username.equals("")) {
+            actualizarListaUsuario();
+            this.jListUsuarios.setEnabled(true);
+        } else {
+            if (SistemaSingleton.getInstance().getUsuarioBusiness().exists(username)) {
+                this.jButtonEliminarUsuario.setEnabled(false);
+                if (username.equals(SistemaSingleton.getInstance().getUsuario().getUsername())) {
+                    username = "El usuario actual no puede ser borrado";
+                    this.jListUsuarios.setEnabled(false);
+                    this.jButtonEliminarUsuario.setEnabled(false);
+                }
+                final String s = username;
+                username = this.jTextFieldNombreUsuarioEliminar.getText();
+                if (!username.equals(SistemaSingleton.getInstance().getUsuario().getUsername())
+                        || username.equals("")) {
+                    this.jListUsuarios.setEnabled(true);
+                }
+                this.jListUsuarios.setModel(new javax.swing.AbstractListModel<String>() {
+
+                    String[] strings = new String[]{s};
+
+                    public int getSize() {
+                        return strings.length;
+                    }
+
+                    public String getElementAt(int i) {
+                        return strings[i];
+                    }
+
+                });
+            } else {
+                this.jListUsuarios.setEnabled(false);
+                this.jButtonEliminarUsuario.setEnabled(false);
+
+                this.jListUsuarios.setModel(new javax.swing.AbstractListModel<String>() {
+                    String[] strings = new String[]{"Usuario no encontrado"};
+
+                    public int getSize() {
+                        return strings.length;
+                    }
+
+                    public String getElementAt(int i) {
+                        return strings[i];
+                    }
+                });
+            }
+
+        }
+
+
+    }//GEN-LAST:event_jButtonBuscarEliminarActionPerformed
+
+    private void jListUsuariosValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListUsuariosValueChanged
+        // TODO add your handling code here:
+        if (this.jListUsuarios.getSelectedIndex() != -1) {
+            this.jButtonEliminarUsuario.setEnabled(true);
+        }
+    }//GEN-LAST:event_jListUsuariosValueChanged
+
+    private void formInternalFrameClosed(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosed
+        // TODO add your handling code here:
+        JFWindow.getInstance().jMenuItemGestionUsuarios.setEnabled(true);
+    }//GEN-LAST:event_formInternalFrameClosed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -161,14 +414,64 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButtonBuscarEliminar;
     private javax.swing.JButton jButtonEliminarUsuario;
     private javax.swing.JButton jButtonRegistrarUsuario;
+    private javax.swing.JCheckBox jCheckBoxAdmin;
+    private javax.swing.JComboBox<String> jComboBoxRol;
     private javax.swing.JLabel jLabelPasswordRegistrar;
+    private javax.swing.JLabel jLabelRol;
     private javax.swing.JLabel jLabelUsernameEliminar;
     private javax.swing.JLabel jLabelUsernameRegistrar;
+    private javax.swing.JList<String> jListUsuarios;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelEliminarUsuario;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextFieldNombreUsuarioEliminar;
     private javax.swing.JTextField jTextFieldNombreUsuarioRegistrar;
     private javax.swing.JTextField jTextFieldPasswordRegistrar;
     // End of variables declaration//GEN-END:variables
+
+    private void actualizarListaUsuario() {
+        this.jButtonEliminarUsuario.setEnabled(false);
+        this.jListUsuarios.clearSelection();
+        this.jListUsuarios.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = cargarDatosUsuarios();
+
+            public int getSize() {
+                return strings.length;
+            }
+
+            public String getElementAt(int i) {
+                return strings[i];
+            }
+
+            private String[] cargarDatosUsuarios() {
+                List<String> usuarios = SistemaSingleton.getInstance().getUsuarioBusiness().loadNombresUsuarios();
+                usuarios.remove(SistemaSingleton.getInstance().getUsuario().getUsername());
+                String[] usuariosInfo = new String[usuarios.size()];
+                int j = 0;
+                for (String nombre : usuarios) {
+                    usuariosInfo[j] = nombre;
+                    j++;
+                }
+                return usuariosInfo;
+            }//cargarDatosUsuarios
+        });
+    }
+
+    private void limpiarListaUsuarios() {
+        this.jListUsuarios.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = new String[]{};
+
+            public int getSize() {
+                return strings.length;
+            }
+
+            public String getElementAt(int i) {
+                return strings[i];
+            }
+        });
+        this.jListUsuarios.setEnabled(false);
+    }//limpiarListaUsuarios
 }
