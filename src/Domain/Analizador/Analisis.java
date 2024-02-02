@@ -77,7 +77,7 @@ public class Analisis extends Thread{
                 && urlValida;
     }//validarSolicitud
 
-    protected static org.jdom.Document analisisDeElementos(Solicitud solicitud) throws IOException, NoSuchAlgorithmException, KeyManagementException {
+    public static org.jdom.Element analisisDeElementos(Solicitud solicitud) throws IOException, NoSuchAlgorithmException, KeyManagementException {
         Document doc = AnalizadorURL.conectarURL(solicitud.getUrl());
         //int img
 
@@ -88,39 +88,38 @@ public class Analisis extends Thread{
         subtitulos += doc.getElementsByTag(Utility.TAG_H5).size();
         subtitulos += doc.getElementsByTag(Utility.TAG_H6).size();
 
-        org.jdom.Element root = new org.jdom.Element(Utility.ANALISIS_ELEMENTOS);
-        org.jdom.Document documentoXML = new org.jdom.Document(root);
+        org.jdom.Element eAnalisis1 = new org.jdom.Element(Utility.ANALISIS1);
 
         org.jdom.Element eImagenes = new org.jdom.Element(Utility.IMAGES);
         eImagenes.setAttribute(Utility.CANTIDAD,
                 doc.getElementsByTag(Utility.TAG_IMG).size() + "");
-        root.addContent(eImagenes);
+        eAnalisis1.addContent(eImagenes);
 
         org.jdom.Element eA = new org.jdom.Element(Utility.LINKS);
         eA.setAttribute(Utility.CANTIDAD,
                 doc.getElementsByTag(Utility.TAG_A).size() + "");
-        root.addContent(eA);
+        eAnalisis1.addContent(eA);
 
         org.jdom.Element eVideos = new org.jdom.Element(Utility.VIDEOS);
         eVideos.setAttribute(Utility.CANTIDAD,
-                doc.getElementsByTag(Utility.TAG_VIDEO) + "");
-        root.addContent(eVideos);
+                doc.getElementsByTag(Utility.TAG_VIDEO).size() + "");
+        eAnalisis1.addContent(eVideos);
 
         org.jdom.Element eTitulos = new org.jdom.Element(Utility.TITLES);
         eTitulos.setAttribute(Utility.CANTIDAD,
                 doc.getElementsByTag(Utility.TAG_TITLE).size() + "");
-        root.addContent(eTitulos);
+        eAnalisis1.addContent(eTitulos);
 
         org.jdom.Element eSubtitulos = new org.jdom.Element(Utility.SUBTITLES);
         eSubtitulos.setAttribute(Utility.CANTIDAD, subtitulos + "");
-        root.addContent(eSubtitulos);
+        eAnalisis1.addContent(eSubtitulos);
 
         org.jdom.Element eTablas = new org.jdom.Element(Utility.TABLES);
         eTablas.setAttribute(Utility.CANTIDAD,
                 doc.getElementsByTag(Utility.TAG_TABLE).size() + "");
-        root.addContent(eTablas);
+        eAnalisis1.addContent(eTablas);
 
-        return documentoXML;
+        return eAnalisis1;
     }//analisisDeElementos
 
     protected void analisisDeElementosyExtraccion(Solicitud solicitud) throws IOException, NoSuchAlgorithmException, KeyManagementException {

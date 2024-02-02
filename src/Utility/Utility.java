@@ -46,10 +46,15 @@ public class Utility {
     
     public static final String ATTRI_SRC = "abs:src";
     
-    public static final String ANALISIS_ELEMENTOS = "analisis_elementos";
+    public static final String ANALISIS1 = "analisis_elementos";
+    public static final String ANALISIS2 = "analisis_extraccion";
+    public static final String ANALISIS3 = "analisis_comparacion";
     
     public static final String ESTADO_PENDIENTE= "completado";
     public static final String ESTADO_EN_EJECUCION= "en_ejecucion";
     public static final String ESTADO_FINALIZADO = "finalizado";
+    
+    public static final String GRAFICO_BARRAS = "barras";
+    public static final String GRAFICO_PASTEL = "pastel";
     
 }//class
