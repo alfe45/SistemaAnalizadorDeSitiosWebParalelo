@@ -185,21 +185,26 @@ public class JIFAnalista extends javax.swing.JInternalFrame {
         actualizarSolicitudSeleccionada();
         //Aqui se hace el analisis de la solicitud selecionada
         //request - response
-        if (SistemaSingleton.getInstance().crearAnalisisSolicitud(this.solicitudSeleccionada,
-                (int) this.jSpinnerSubprocesos.getValue(),
-                (int) this.jSpinnerEsclavos.getValue())) {
-            System.out.println("solicituda en analisis");
+        if (this.solicitudSeleccionada != null) {
+            if (SistemaSingleton.getInstance().crearAnalisisSolicitud(this.solicitudSeleccionada,
+                    (int) this.jSpinnerSubprocesos.getValue(),
+                    (int) this.jSpinnerEsclavos.getValue())) {
+                System.out.println("solicituda en analisis");
 //            this.datosSolicitudes.remove(solicitudSeleccionada);
-            synchronized (this) {
-                this.flag_actualizar = true;
-                this.flag_datosSolicitudesActualizados = true;
-                notifyAll();
+                synchronized (this) {
+                    this.flag_actualizar = true;
+                    this.flag_datosSolicitudesActualizados = true;
+                    notifyAll();
+                }
+                this.jButtonAnalizar.setEnabled(false);
+                this.jListSolicitudes.clearSelection();
+            } else {
+                System.out.println("solicituda no agregada");
             }
-            this.jButtonAnalizar.setEnabled(false);
-            this.jListSolicitudes.clearSelection();
         } else {
-            System.out.println("solicituda no agregada");
+            System.out.println("No hay solicitudes para analizar");
         }
+
     }//GEN-LAST:event_jButtonAnalizarActionPerformed
 
     private void jSpinnerEsclavosStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerEsclavosStateChanged

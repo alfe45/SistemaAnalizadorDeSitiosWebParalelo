@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<solicitud><solicitud estado="pendiente" url="https://es.wikipedia.org/wiki/Estrella"><digitador username="lucy" /><gestor username="gestor" /><analista username="alfe45" /><analisis_elementos hacer="true" /><analisis_extraccion hacer="false" /><analisis_comparacion hacer="false" /><resultado><analisis_elementos><images cantidad="41" /><links cantidad="1857" /><videos cantidad="0" /><titles cantidad="1" /><subtitles cantidad="45" /><tables cantidad="8" /></analisis_elementos></resultado></solicitud></solicitud>
+<solicitud />
