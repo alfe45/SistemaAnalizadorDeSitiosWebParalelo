@@ -1,6 +1,5 @@
 package Domain.Analizador;
 
-import Domain.Sistema.UsuarioExaminador;
 import GUI.JFWindow;
 import java.io.IOException;
 import java.security.KeyManagementException;

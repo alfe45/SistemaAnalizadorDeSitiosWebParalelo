@@ -52,10 +52,10 @@ public class Analisis extends Thread {
         } catch (IOException | NoSuchAlgorithmException | KeyManagementException ex) {
             Logger.getLogger(Analisis.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         estado = Utility.ESTADO_FINALIZADO;
         SistemaSingleton.getInstance().agregarResultado(solicitud, resultado);
         System.out.println("Analisis finalizado");
-
     }//run
 
     private void analizar() {

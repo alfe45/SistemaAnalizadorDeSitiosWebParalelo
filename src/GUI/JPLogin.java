@@ -144,7 +144,7 @@ public class JPLogin extends javax.swing.JPanel {
 
         if (!username.equals("") && !password.equals("")) {
             try {
-//                JPLogin panel = this;
+                //request - response
                 boolean logged = SistemaSingleton.getInstance().login(username, password);
                 new Thread(new Runnable() {
                     @Override
