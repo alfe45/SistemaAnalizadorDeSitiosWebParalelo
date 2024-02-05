@@ -1,7 +1,6 @@
 package Data;
 
 import Domain.Analizador.Solicitud;
-import Domain.Sistema.SistemaSingleton;
 import Utility.Utility;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -44,61 +43,65 @@ public class SolicitudData {
     public boolean saveNewSolicitud(Solicitud solicitud) throws IOException {
         if (!exists(solicitud)) {
             return saveSolicitud(solicitud);
-        }else{
+        } else {
             return false;
         }
     }//saveNewSolicitud
-    
+
     public boolean overrideSolicitud(Solicitud solicitud) throws IOException {
         if (exists(solicitud)) {
             List<Element> eSolicitudes = this.root.getChildren();
             for (Element eSolicitud : eSolicitudes) {
                 if (eSolicitud.getAttributeValue(Utility.URL).equals(solicitud.getUrl())) {
                     this.root.removeContent(eSolicitud);
+                    System.out.println("eliminada");
                     break;
                 }
             }
+            saveXML();
             return saveSolicitud(solicitud);
-        }else{
+        } else {
             return false;
         }
     }//saveNewSolicitud
 
-    public List<Solicitud> loadSolicitudes(String username) {
+    public List<Solicitud> loadSolicitudes(String username, String rol) {
         List<Solicitud> solicitudes = new ArrayList<>();
         List<Element> eSolicitudes = this.root.getChildren();
-        for (Element eSolicitud : eSolicitudes) {
-            if (eSolicitud.getChild(Utility.DIGITADOR).getAttributeValue(Utility.USERNAME).equals(username)) {
+        if (rol.equals(Utility.GESTOR)) {
+            for (Element eSolicitud : eSolicitudes) {
                 Solicitud temp = new Solicitud(
                         eSolicitud.getAttributeValue(Utility.ESTADO),
                         eSolicitud.getAttributeValue(Utility.URL),
                         eSolicitud.getChild(Utility.DIGITADOR).getAttributeValue(Utility.USERNAME),
+                        eSolicitud.getChild(Utility.GESTOR).getAttributeValue(Utility.USERNAME),
                         eSolicitud.getChild(Utility.ANALISTA).getAttributeValue(Utility.USERNAME),
                         Boolean.parseBoolean(eSolicitud.getChild(Utility.ANALISIS1).getAttributeValue(Utility.HACER)),
                         Boolean.parseBoolean(eSolicitud.getChild(Utility.ANALISIS2).getAttributeValue(Utility.HACER)),
-                        Boolean.parseBoolean(eSolicitud.getChild(Utility.ANALISIS3).getAttributeValue(Utility.HACER)));
+                        Boolean.parseBoolean(eSolicitud.getChild(Utility.ANALISIS3).getAttributeValue(Utility.HACER)),
+                        eSolicitud.getChild(Utility.RESULTADO));
                 solicitudes.add(temp);
             }
+            return solicitudes;
+        } else {
+            for (Element eSolicitud : eSolicitudes) {
+                if (eSolicitud.getChild(rol).getAttributeValue(Utility.USERNAME).equals(username)) {
+                    Solicitud temp = new Solicitud(
+                            eSolicitud.getAttributeValue(Utility.ESTADO),
+                            eSolicitud.getAttributeValue(Utility.URL),
+                            eSolicitud.getChild(Utility.DIGITADOR).getAttributeValue(Utility.USERNAME),
+                            eSolicitud.getChild(Utility.GESTOR).getAttributeValue(Utility.USERNAME),
+                            eSolicitud.getChild(Utility.ANALISTA).getAttributeValue(Utility.USERNAME),
+                            Boolean.parseBoolean(eSolicitud.getChild(Utility.ANALISIS1).getAttributeValue(Utility.HACER)),
+                            Boolean.parseBoolean(eSolicitud.getChild(Utility.ANALISIS2).getAttributeValue(Utility.HACER)),
+                            Boolean.parseBoolean(eSolicitud.getChild(Utility.ANALISIS3).getAttributeValue(Utility.HACER)),
+                            eSolicitud.getChild(Utility.RESULTADO));
+                    solicitudes.add(temp);
+                }
+            }
+            return solicitudes;
         }
-        return solicitudes;
-    }//loadSolicitudeDigitador
-
-    public List<Solicitud> loadAllSolicitudes() {
-        List<Solicitud> solicitudes = new ArrayList<>();
-        List<Element> eSolicitudes = this.root.getChildren();
-        for (Element eSolicitud : eSolicitudes) {
-            Solicitud temp = new Solicitud(
-                    eSolicitud.getAttributeValue(Utility.ESTADO),
-                    eSolicitud.getAttributeValue(Utility.URL),
-                    eSolicitud.getChild(Utility.DIGITADOR).getAttributeValue(Utility.USERNAME),
-                    eSolicitud.getChild(Utility.ANALISTA).getAttributeValue(Utility.USERNAME),
-                    Boolean.parseBoolean(eSolicitud.getChild(Utility.ANALISIS1).getAttributeValue(Utility.HACER)),
-                    Boolean.parseBoolean(eSolicitud.getChild(Utility.ANALISIS2).getAttributeValue(Utility.HACER)),
-                    Boolean.parseBoolean(eSolicitud.getChild(Utility.ANALISIS3).getAttributeValue(Utility.HACER)));
-            solicitudes.add(temp);
-        }
-        return solicitudes;
-    }//loadAllSolicitudes
+    }//loadSolicitudes
 
     private boolean saveSolicitud(Solicitud solicitud) throws IOException {
         Element eSolicitud = new Element(Utility.SOLICITUD);
@@ -108,6 +111,10 @@ public class SolicitudData {
         Element eDigitador = new Element(Utility.DIGITADOR);
         eDigitador.setAttribute(Utility.USERNAME, solicitud.getDigitador());
         eSolicitud.addContent(eDigitador);
+
+        Element eGestor = new Element(Utility.GESTOR);
+        eGestor.setAttribute(Utility.USERNAME, solicitud.getGestor());
+        eSolicitud.addContent(eGestor);
 
         Element eAnalista = new Element(Utility.ANALISTA);
         eAnalista.setAttribute(Utility.USERNAME, solicitud.getAnalista());
@@ -140,5 +147,19 @@ public class SolicitudData {
         }
         return false;
     }//exists
+
+    public boolean agregarResultado(Solicitud solicitud, Element resultado) throws IOException {
+        List<Solicitud> solicitudes = new ArrayList<>();
+        List<Element> eSolicitudes = this.root.getChildren();
+        for (Element eSolicitud : eSolicitudes) {
+            if (eSolicitud.getAttributeValue(Utility.URL).equals(solicitud.getUrl())) {
+                eSolicitud.removeChild(Utility.RESULTADO);
+                eSolicitud.addContent(resultado);
+                saveXML();
+                return true;
+            }
+        }
+        return false;
+    }//agregarResultado
 
 }//class

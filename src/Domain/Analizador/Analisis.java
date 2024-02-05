@@ -1,28 +1,32 @@
 package Domain.Analizador;
 
+import Domain.Sistema.SistemaSingleton;
 import Utility.Utility;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-public class Analisis extends Thread{
+public class Analisis extends Thread {
 
     private Solicitud solicitud;
     private String estado;
-    private String resultado;
+    private org.jdom.Element resultado;
     private int subprocesos;
     private int esclavos;
+    private boolean running;
 
     public Analisis(Solicitud solicitud, int subprocesos, int esclavos) {
         this.solicitud = solicitud;
         this.estado = Utility.ESTADO_PENDIENTE;
-        this.resultado = "";
+        this.resultado = new org.jdom.Element(Utility.RESULTADO);
         this.subprocesos = subprocesos;
         this.esclavos = esclavos;
+        this.running = false;
     }
 
     public String getEstado() {
@@ -36,35 +40,37 @@ public class Analisis extends Thread{
     @Override
     public void run() {
         System.out.println("Analisis iniciado");
-        while (true) {            
-            if (this.estado.equals(Utility.ESTADO_FINALIZADO)) {
-                break;
-            }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Analisis.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }//while
+        this.running = true;
+        this.estado = Utility.ESTADO_EN_EJECUCION;
+
+        try {
+            resultado.removeContent();
+            
+            resultado.addContent(analisisDeElementos(solicitud));
+            
+            
+        } catch (IOException | NoSuchAlgorithmException | KeyManagementException ex) {
+            Logger.getLogger(Analisis.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        estado = Utility.ESTADO_FINALIZADO;
+        SistemaSingleton.getInstance().agregarResultado(solicitud, resultado);
         System.out.println("Analisis finalizado");
+
     }//run
 
-    
-    
     private void analizar() {
         for (int i = 0; i < esclavos; i++) {
             Esclavo esclavo = new Esclavo(this.subprocesos);
         }
-        
-        
+
         if (this.solicitud.doAnalisis1()) {
-            
+
         }
         if (this.solicitud.doAnalisis2()) {
-            
+
         }
         if (this.solicitud.doAnalisis3()) {
-            
+
         }
 
     }
@@ -79,7 +85,6 @@ public class Analisis extends Thread{
 
     public static org.jdom.Element analisisDeElementos(Solicitud solicitud) throws IOException, NoSuchAlgorithmException, KeyManagementException {
         Document doc = AnalizadorURL.conectarURL(solicitud.getUrl());
-        //int img
 
         int subtitulos = doc.getElementsByTag(Utility.TAG_H1).size();
         subtitulos += doc.getElementsByTag(Utility.TAG_H2).size();

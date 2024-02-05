@@ -19,19 +19,14 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 public class AnalizadorURL {
-
-    private UsuarioExaminador analista;
+    
     private ArrayList<Analisis> analisis;
 
     public AnalizadorURL() {
         this.analisis = new ArrayList<>();
     }
-
-    public void setAnalista(UsuarioExaminador analista) {
-        this.analista = analista;
-    }
-
-    public boolean analizarSolicitud(Solicitud solicitud, int subprocesos, int esclavos) throws IOException, NoSuchAlgorithmException, KeyManagementException {
+    
+    public boolean crearAnalisisSolicitud(Solicitud solicitud, int subprocesos, int esclavos) throws IOException, NoSuchAlgorithmException, KeyManagementException {
         if (subprocesos >= 1 && esclavos >= 1) {
             Analisis analisis = new Analisis(solicitud, subprocesos, esclavos);
             this.analisis.add(analisis);
@@ -40,7 +35,7 @@ public class AnalizadorURL {
         } else {
             return false;
         }
-    }//analizarSolicitud
+    }//crearAnalisisSolicitud
 
     public static boolean validarURL(String url) {
 

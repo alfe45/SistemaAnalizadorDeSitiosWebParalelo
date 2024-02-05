@@ -13,16 +13,22 @@ import javax.swing.JOptionPane;
 
 public class JIFGestor extends javax.swing.JInternalFrame {
 
-    private List<Solicitud> datos;
-    private int oldDatosCount;
+    private List<Solicitud> datosSolicitudes;
+    private List<String> datosUsernames;
+    private int oldDatosSolicitudesCount;
+    private int oldDatosUsernamesCount;
     private boolean flag_actualizar;
-    private boolean flag_datosActualizados;
+    private boolean flag_datosUsernamesActualizados;
+    private boolean flag_datosSolicitudesActualizados;
 
     private Thread hiloActualizarDatos;
     protected boolean hiloActualizarDatos_running;
 
     private Thread hiloActualizarGUI;
     protected boolean hiloActualizarGUI_running;
+
+    private Solicitud solicitudSeleccionadaListaAsignadas;
+    private Solicitud solicitudSeleccionadaListaNoAsignadas;
 
     public JIFGestor() {
         initComponents();
@@ -61,7 +67,7 @@ public class JIFGestor extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
-        setTitle("Digitador");
+        setTitle("Gestor: "+SistemaSingleton.getInstance().getUsuario().getUsername());
         setVisible(true);
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
@@ -82,16 +88,25 @@ public class JIFGestor extends javax.swing.JInternalFrame {
         });
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel1MouseClicked(evt);
+            }
+        });
 
-        jListSolicitudesNoAsignadas.setBackground(new java.awt.Color(0, 0, 0));
-        jListSolicitudesNoAsignadas.setForeground(new java.awt.Color(255, 255, 255));
         jListSolicitudesNoAsignadas.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jListSolicitudesNoAsignadas.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jListSolicitudesNoAsignadasValueChanged(evt);
+            }
+        });
         jScrollPane1.setViewportView(jListSolicitudesNoAsignadas);
 
         jLabelActualizando.setForeground(new java.awt.Color(0, 0, 0));
         jLabelActualizando.setText("[Actualizando]");
 
         jButtonAsignar.setText("Asignar");
+        jButtonAsignar.setEnabled(false);
         jButtonAsignar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonAsignarActionPerformed(evt);
@@ -107,18 +122,25 @@ public class JIFGestor extends javax.swing.JInternalFrame {
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Analista:");
 
-        jPanel2.setBackground(new java.awt.Color(0, 0, 0));
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
+        jTextFieldPorcentaje.setText("AUN NO HECHO");
         jTextFieldPorcentaje.setEnabled(false);
 
-        jLabelEstado.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelEstado.setForeground(new java.awt.Color(0, 0, 0));
         jLabelEstado.setText("Estado:");
 
-        jLabelPorcentaje.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelPorcentaje.setForeground(new java.awt.Color(0, 0, 0));
         jLabelPorcentaje.setText("Porcentaje:");
 
         jTextFieldEstado1.setEnabled(false);
 
+        jListSolicitudesAsignadas.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jListSolicitudesAsignadasValueChanged(evt);
+            }
+        });
         jScrollPane2.setViewportView(jListSolicitudesAsignadas);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -139,7 +161,7 @@ public class JIFGestor extends javax.swing.JInternalFrame {
                         .addComponent(jLabelPorcentaje)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldPorcentaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 90, Short.MAX_VALUE))))
+                        .addGap(0, 47, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -151,8 +173,8 @@ public class JIFGestor extends javax.swing.JInternalFrame {
                     .addComponent(jLabelPorcentaje)
                     .addComponent(jTextFieldPorcentaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jLabelSolicitudesNoAsignadas.setForeground(new java.awt.Color(0, 0, 0));
@@ -192,7 +214,7 @@ public class JIFGestor extends javax.swing.JInternalFrame {
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonAsignar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
                         .addComponent(jLabelSolicitudesNoAsignadas))
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -210,7 +232,7 @@ public class JIFGestor extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -224,29 +246,52 @@ public class JIFGestor extends javax.swing.JInternalFrame {
 
     private void jButtonAsignarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAsignarActionPerformed
         // TODO add your handling code here:
-        for (Solicitud dato : datos) {
-            if (dato.getUrl().equals(this.jListSolicitudesNoAsignadas.getSelectedValue())) {
-                if (SistemaSingleton.getInstance().asignarSolicitud(dato, this.jComboBox1.getSelectedItem().toString())) {
-                    JOptionPane.showMessageDialog(this, "Solicitud asignada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                    synchronized (this) {
-                        this.flag_actualizar = true;
-                        notify();
-                    }
-                    break;
-                } else {
-                    JOptionPane.showMessageDialog(this, "Solicitud no asignada", "Error", JOptionPane.ERROR_MESSAGE);
-                }
+        actualizarSolicitudesSeleccionadas();
+        if (SistemaSingleton.getInstance().asignarSolicitud(this.solicitudSeleccionadaListaNoAsignadas, this.jComboBox1.getSelectedItem().toString())) {
+            JOptionPane.showMessageDialog(this, "Solicitud asignada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            synchronized (this) {
+                this.flag_actualizar = true;
+                this.flag_datosSolicitudesActualizados = true;
+                notify();
             }
+            this.jButtonAsignar.setEnabled(false);
+        } else {
+            JOptionPane.showMessageDialog(this, "Solicitud no asignada", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jButtonAsignarActionPerformed
 
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
         // TODO add your handling code here:
-        synchronized (this) {
-            this.flag_actualizar = true;
-            notifyAll();
+        if (this.jComboBox1.getSelectedItem() != null) {
+            synchronized (this) {
+                this.flag_actualizar = true;
+                this.flag_datosSolicitudesActualizados = true;
+                notifyAll();
+            }
         }
+
     }//GEN-LAST:event_jComboBox1ItemStateChanged
+
+    private void jListSolicitudesAsignadasValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListSolicitudesAsignadasValueChanged
+        // TODO add your handling code here:
+        actualizarSolicitudesSeleccionadas();
+        this.jTextFieldEstado1.setText(this.solicitudSeleccionadaListaAsignadas.getEstado());
+
+    }//GEN-LAST:event_jListSolicitudesAsignadasValueChanged
+
+    private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
+        // TODO add your handling code here:
+        this.jListSolicitudesNoAsignadas.clearSelection();
+        this.jButtonAsignar.setEnabled(false);
+    }//GEN-LAST:event_jPanel1MouseClicked
+
+    private void jListSolicitudesNoAsignadasValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListSolicitudesNoAsignadasValueChanged
+        // TODO add your handling code here:
+        if (this.jListSolicitudesNoAsignadas.getSelectedIndex() != -1) {
+            actualizarSolicitudesSeleccionadas();
+            this.jButtonAsignar.setEnabled(true);
+        }
+    }//GEN-LAST:event_jListSolicitudesNoAsignadasValueChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAsignar;
@@ -267,9 +312,11 @@ public class JIFGestor extends javax.swing.JInternalFrame {
     // End of variables declaration//GEN-END:variables
 
     private void initThreads() {
-        this.datos = new ArrayList<>();
+        this.datosSolicitudes = new ArrayList<>();
+        this.datosUsernames = new ArrayList<>();
         this.flag_actualizar = false;
-        this.flag_datosActualizados = true;
+        this.flag_datosUsernamesActualizados = true;
+        this.flag_datosSolicitudesActualizados = true;
 
         this.hiloActualizarDatos_running = true;
         this.hiloActualizarDatos = new Thread(new Runnable() {
@@ -280,6 +327,7 @@ public class JIFGestor extends javax.swing.JInternalFrame {
                         int n = 1000;
                         Thread.sleep(n);
                         actualizarDatos();
+                        actualizarSolicitudesSeleccionadas();
                     } catch (InterruptedException ex) {
                         Logger.getLogger(JIFGestor.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -313,14 +361,25 @@ public class JIFGestor extends javax.swing.JInternalFrame {
 
     private synchronized void actualizarDatos() {
         //request - response
-        this.flag_datosActualizados = false;
+        this.flag_datosUsernamesActualizados = false;
+        this.flag_datosSolicitudesActualizados = false;
         if (SistemaSingleton.getInstance().getUsuario() != null) {
-            oldDatosCount = datos.size();
-            this.datos = SistemaSingleton.getInstance().misDatos(SistemaSingleton.getInstance().getUsuario().getUsername());
-            this.flag_datosActualizados = true;
-            if (datos.size() > oldDatosCount) {
+
+            //request - response
+            this.oldDatosSolicitudesCount = this.datosSolicitudes.size();
+            this.datosSolicitudes = SistemaSingleton.getInstance().misDatos(SistemaSingleton.getInstance().getUsuario().getUsername());
+            //request - response
+            oldDatosUsernamesCount = this.datosUsernames.size();
+            this.datosUsernames = SistemaSingleton.getInstance().getUsuarioBusiness().loadNombresUsuariosByRol(Utility.ANALISTA);
+            if (datosSolicitudes.size() > oldDatosSolicitudesCount) {
+                this.flag_datosSolicitudesActualizados = true;
                 this.flag_actualizar = true;
-                actualizarJcomboBox();
+                notifyAll();
+            }
+
+            if (datosUsernames.size() > oldDatosUsernamesCount) {
+                this.flag_datosUsernamesActualizados = true;
+                this.flag_actualizar = true;
                 notifyAll();
             }
         }
@@ -328,35 +387,54 @@ public class JIFGestor extends javax.swing.JInternalFrame {
 
     private synchronized void actualizarGUI() {
         this.jLabelActualizando.setText("");
-        if (!flag_actualizar || !this.flag_datosActualizados) {
+        if (!flag_actualizar) {
             try {
                 wait();
             } catch (InterruptedException ex) {
                 Logger.getLogger(JIFAdministrador.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            try {
-                int n = 100;
-                actualizarListas();
-                this.jLabelActualizando.setText("Actualizando.");
-                Thread.sleep(n);
-                this.jLabelActualizando.setText("Actualizando..");
-                Thread.sleep(n);
-                this.jLabelActualizando.setText("Actualizando...");
-                Thread.sleep(n);
-                this.jLabelActualizando.setText("Actualizado!");
-                this.flag_actualizar = false;
-                Thread.sleep(n * 2);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(JIFGestor.class.getName()).log(Level.SEVERE, null, ex);
+            if (this.flag_datosUsernamesActualizados) {
+                try {
+                    int n = 100;
+                    actualizarJcomboBox();
+                    this.jLabelActualizando.setText("[2]Actualizando.");
+                    Thread.sleep(n);
+                    this.jLabelActualizando.setText("[2]Actualizando..");
+                    Thread.sleep(n);
+                    this.jLabelActualizando.setText("[2]Actualizando...");
+                    Thread.sleep(n);
+                    this.jLabelActualizando.setText("[2]Actualizado!");
+                    this.flag_actualizar = false;
+                    Thread.sleep(n * 2);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(JIFGestor.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
-
+            if (this.flag_datosSolicitudesActualizados) {
+                try {
+                    int n = 100;
+                    actualizarListas();
+                    this.jLabelActualizando.setText("Actualizando.");
+                    Thread.sleep(n);
+                    this.jLabelActualizando.setText("Actualizando..");
+                    Thread.sleep(n);
+                    this.jLabelActualizando.setText("Actualizando...");
+                    Thread.sleep(n);
+                    this.jLabelActualizando.setText("Actualizado!");
+                    this.flag_actualizar = false;
+                    Thread.sleep(n * 2);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(JIFGestor.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
     }//actualizarGUI
 
     private void actualizarListas() {
         List<String> temp = new ArrayList<>();
-        for (Solicitud solicitud : this.datos) {
+        
+        for (Solicitud solicitud : this.datosSolicitudes) {
             if (solicitud.getAnalista().equals(Utility.NO_ASIGNADO)) {
                 temp.add(solicitud.getUrl());
             }
@@ -373,8 +451,9 @@ public class JIFGestor extends javax.swing.JInternalFrame {
         });
         temp.clear();
 
-        for (Solicitud solicitud : this.datos) {
-            if (solicitud.getAnalista().equals(this.jComboBox1.getSelectedItem().toString())) {
+        for (Solicitud solicitud : this.datosSolicitudes) {
+            if (solicitud.getAnalista().equals(this.jComboBox1.getSelectedItem().toString())
+                    && solicitud.getGestor().equals(SistemaSingleton.getInstance().getUsuario().getUsername())) {
                 temp.add(solicitud.getUrl());
             }
         }
@@ -391,11 +470,22 @@ public class JIFGestor extends javax.swing.JInternalFrame {
     }//actualizarListas
 
     private void actualizarJcomboBox() {
-        String[] strings = SistemaSingleton.getInstance().getUsuarioBusiness().loadNombresUsuariosByRol(Utility.ROL_ANALISTA).toArray(new String[0]);
+        String[] strings = this.datosUsernames.toArray(new String[0]);
         this.jComboBox1.setModel(
                 new javax.swing.DefaultComboBoxModel<>(
                         strings)
         );
     }//actualizarJcomboBox
+
+    private void actualizarSolicitudesSeleccionadas() {
+        for (Solicitud solicitud : datosSolicitudes) {
+            if (solicitud.getUrl().equals(this.jListSolicitudesNoAsignadas.getSelectedValue())) {
+                this.solicitudSeleccionadaListaNoAsignadas = solicitud;
+            }
+            if (solicitud.getUrl().equals(this.jListSolicitudesAsignadas.getSelectedValue())) {
+                this.solicitudSeleccionadaListaAsignadas = solicitud;
+            }
+        }
+    }//actualizarSolicitudesSeleccionadas
 
 }//class

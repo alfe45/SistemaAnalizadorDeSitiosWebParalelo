@@ -2,12 +2,14 @@ package Domain.Analizador;
 
 import Domain.Sistema.SistemaSingleton;
 import Utility.Utility;
+import org.jdom.Element;
 
 public class Solicitud {
 
     private String url;
     private boolean[] analisis;
     private String digitador;
+    private String gestor;
     private String analista;
     private String estado;
 
@@ -18,17 +20,31 @@ public class Solicitud {
         this.analisis[1] = analisis2;
         this.analisis[2] = analisis3;
         this.digitador = SistemaSingleton.getInstance().getUsuario().getUsername();
+        this.gestor = Utility.NO_ASIGNADO;
         this.analista = Utility.NO_ASIGNADO;
         this.estado = Utility.ESTADO_PENDIENTE;
     }
 
-    public Solicitud(String estado, String url, String digitador, String analista, boolean analisis1, boolean analisis2, boolean analisis3) {
+    public Solicitud(String estado, String url, String digitador, String gestor, String analista, boolean analisis1, boolean analisis2, boolean analisis3) {
         this.url = url;
         this.analisis = new boolean[3];
         this.analisis[0] = analisis1;
         this.analisis[1] = analisis2;
         this.analisis[2] = analisis3;
         this.digitador = digitador;
+        this.gestor = gestor;
+        this.analista = analista;
+        this.estado = estado;
+    }
+    
+    public Solicitud(String estado, String url, String digitador, String gestor, String analista, boolean analisis1, boolean analisis2, boolean analisis3,Element resultado) {
+        this.url = url;
+        this.analisis = new boolean[3];
+        this.analisis[0] = analisis1;
+        this.analisis[1] = analisis2;
+        this.analisis[2] = analisis3;
+        this.digitador = digitador;
+        this.gestor = gestor;
         this.analista = analista;
         this.estado = estado;
     }
@@ -55,6 +71,14 @@ public class Solicitud {
 
     public void setDigitador(String digitador) {
         this.digitador = digitador;
+    }
+
+    public String getGestor() {
+        return gestor;
+    }
+
+    public void setGestor(String gestor) {
+        this.gestor = gestor;
     }
 
     public String getAnalista() {

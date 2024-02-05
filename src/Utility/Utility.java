@@ -28,7 +28,7 @@ public class Utility {
     public static final String TAG_H4 = "h4";
     public static final String TAG_H5 = "h5";
     public static final String TAG_H6 = "h6";
-    
+
     public static final String TITLES = "titles";
     public static final String SUBTITLES = "subtitles";
     public static final String VIDEOS = "videos";
@@ -59,6 +59,8 @@ public class Utility {
 
     public static final String DIGITADOR = "digitador";
     public static final String ANALISTA = "analista";
+    public static final String GESTOR = "gestor";
     public static final String NO_ASIGNADO = "noAsignado";
 
+    public static final String RESULTADO = "resultado";
 }//class

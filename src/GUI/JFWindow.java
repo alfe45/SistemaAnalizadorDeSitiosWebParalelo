@@ -143,7 +143,7 @@ public class JFWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
         JFWindow.getInstance().jMenuItemGestionSolicitudes.setEnabled(false);
         JFWindow.jIFGestor = new JIFGestor();
-        this.add(new JIFGestor());
+        this.add(jIFGestor);
     }//GEN-LAST:event_jMenuItemGestionSolicitudesActionPerformed
 
     private void jMenuItemLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLogOutActionPerformed
@@ -168,12 +168,12 @@ public class JFWindow extends javax.swing.JFrame {
         if (JFWindow.jIFGestor != null) {
             this.remove(JFWindow.jIFGestor);
             this.jF_jMenuItemGestionSolicitudes.setEnabled(true);
-//            JFWindow.jIFGestor.killThreads();
+            JFWindow.jIFGestor.killThreads();
         }
         if (JFWindow.jIFAnalista != null) {
             this.remove(JFWindow.jIFAnalista);
             this.jF_jMenuItemGestionAnalisis.setEnabled(true);
-//            JFWindow.jIFAnalista.killThreads();
+            JFWindow.jIFAnalista.killThreads();
         }
 
         JFWindow.getInstance().setTitle("Analizador de Sitios Web Paralelo");

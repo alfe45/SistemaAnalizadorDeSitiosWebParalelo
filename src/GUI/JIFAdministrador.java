@@ -68,7 +68,7 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
-        setTitle("Gestión de Usuarios");
+        setTitle("Administrador: "+SistemaSingleton.getInstance().getUsuario().getUsername());
         setVisible(true);
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {

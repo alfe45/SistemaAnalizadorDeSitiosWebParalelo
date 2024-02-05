@@ -14,6 +14,7 @@ import Domain.Analizador.Solicitud;
 import java.security.KeyManagementException;
 import java.util.ArrayList;
 import java.util.List;
+import org.jdom.Element;
 
 public class SistemaSingleton {
 
@@ -89,7 +90,6 @@ public class SistemaSingleton {
         if (this.usuario.tipo().contains(Utility.EXAMINADOR)) {
             if (this.usuario.tipo().contains(Utility.ROL_ANALISTA)) {
                 this.analizadorURL = new AnalizadorURL();
-                this.analizadorURL.setAnalista((UsuarioExaminador) this.usuario);
                 return true;
             }
             return false;
@@ -121,20 +121,25 @@ public class SistemaSingleton {
         List<Solicitud> datos = new ArrayList<>();
         if (usuario != null) {
             if (this.usuario.tipo().contains(Utility.DIGITADOR)) {
-                datos = this.solicitudBusiness.loadSolicitudes(username);
+                datos = this.solicitudBusiness.loadSolicitudes(username, Utility.ROL_DIGITADOR);
                 return datos;
             }
             if (this.usuario.tipo().contains(Utility.ROL_GESTOR)) {
-                datos = this.solicitudBusiness.loadAllSolicitudes();
+                datos = this.solicitudBusiness.loadSolicitudes(username, Utility.ROL_GESTOR);
+                return datos;
+            }
+            if (this.usuario.tipo().contains(Utility.ROL_ANALISTA)) {
+                datos = this.solicitudBusiness.loadSolicitudes(username, Utility.ROL_ANALISTA);
                 return datos;
             }
         }
         return null;
     }//misDatos
 
-    public boolean asignarSolicitud(Solicitud solicitud, String analistaUsername){
+    public boolean asignarSolicitud(Solicitud solicitud, String analistaUsername) {
         if (!analistaUsername.isBlank()) {
             solicitud.setAnalista(analistaUsername);
+            solicitud.setGestor(this.usuario.getUsername());
             try {
                 return this.solicitudBusiness.overrideSolicitud(solicitud);
             } catch (IOException ex) {
@@ -147,5 +152,29 @@ public class SistemaSingleton {
         }
         return false;
     }//asignarSolicitud;
+
+    public boolean agregarResultado(Solicitud solicitud, Element resultado){
+        try {
+            return this.solicitudBusiness.agregarResultado(solicitud, resultado);
+        } catch (IOException ex) {
+            Logger.getLogger(SistemaSingleton.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }//agregarResultado;
+
+    public boolean crearAnalisisSolicitud(Solicitud solicitudSeleccionada, int subprocesos, int esclavos) {
+        if (this.analizadorURL != null) {
+            try {
+                return this.analizadorURL.crearAnalisisSolicitud(solicitudSeleccionada, subprocesos, esclavos);
+            } catch (IOException ex) {
+                Logger.getLogger(SistemaSingleton.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(SistemaSingleton.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (KeyManagementException ex) {
+                Logger.getLogger(SistemaSingleton.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return false;
+    }//crearAnalisisSolicitud
 
 }//class
