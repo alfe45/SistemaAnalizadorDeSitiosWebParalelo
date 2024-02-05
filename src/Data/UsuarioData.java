@@ -33,9 +33,9 @@ public class UsuarioData {
         } else {
             this.root = new Element(Utility.USUARIOS);
             this.jdomDocument = new Document(this.root);
-            saveUsuario(new UsuarioAdministrador("admin", "admin"));
             saveXML();
         }//if
+        saveNewUsuario(new UsuarioAdministrador("admin", "admin"));
     }
 
     public boolean overrideUsuario(Usuario usuario) throws IOException, NoSuchAlgorithmException {
@@ -103,7 +103,7 @@ public class UsuarioData {
         }
         return null;
     }//exists
-    
+
     public List<Usuario> loadUsuarios() {
         List<Usuario> usuarios = new ArrayList<>();
         List<Element> eUsuarios = this.root.getChildren();
@@ -134,7 +134,21 @@ public class UsuarioData {
             usuarios.add(eUsuario.getAttributeValue(Utility.USERNAME));
         }
         return usuarios;
-    }//loadUsuarios
+    }//loadNombresUsuarios
+
+    public List<String> loadNombresUsuariosByRol(String rol) {
+        List<String> usuarios = new ArrayList<>();
+        List<Element> eUsuarios = this.root.getChildren();
+        for (Element eUsuario : eUsuarios) {
+            Element eRol = eUsuario.getChild(Utility.ROL);
+            if (eRol != null) {
+                if (eRol.getText().equals(rol)) {
+                     usuarios.add(eUsuario.getAttributeValue(Utility.USERNAME));
+                }
+            }
+        }
+        return usuarios;
+    }//loadNombresUsuariosByRol
 
     //METODOS PRIVADOS
     private void saveXML() throws FileNotFoundException, IOException {
@@ -147,24 +161,18 @@ public class UsuarioData {
         eUsuario.setAttribute(Utility.USERNAME, usuario.getUsername().toLowerCase());
         String encrytedPassword = Encryptor.encrypt(usuario.getPassword(), Encryptor.SHA256);
         eUsuario.setAttribute(Utility.PASSWORD, encrytedPassword);
-        switch (usuario.tipo()) {
-            case Utility.ADMIN:
-                eUsuario.setAttribute(Utility.TIPO_USUARIO, Utility.ADMIN);
-                break;
-            case Utility.EXAMINADOR:
-                eUsuario.setAttribute(Utility.TIPO_USUARIO, Utility.EXAMINADOR);
-                Element eRol = new Element(Utility.ROL);
-                eRol.addContent(((UsuarioExaminador) usuario).getRol());
-                eUsuario.addContent(eRol);
-                break;
-            default:
-                throw new AssertionError();
+
+        if (usuario.tipo().contains(Utility.ADMIN)) {
+            eUsuario.setAttribute(Utility.TIPO_USUARIO, Utility.ADMIN);
+        } else {
+            eUsuario.setAttribute(Utility.TIPO_USUARIO, Utility.EXAMINADOR);
+            Element eRol = new Element(Utility.ROL);
+            eRol.addContent(((UsuarioExaminador) usuario).getRol());
+            eUsuario.addContent(eRol);
         }
         this.root.addContent(eUsuario);
         saveXML();
         return true;
     }//saveUsuario
-
-    
 
 }//class

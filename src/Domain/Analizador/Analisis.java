@@ -37,7 +37,7 @@ public class Analisis extends Thread{
     public void run() {
         System.out.println("Analisis iniciado");
         while (true) {            
-            if (this.estado.equals(Utility.FINALIZADO)) {
+            if (this.estado.equals(Utility.ESTADO_FINALIZADO)) {
                 break;
             }
             try {

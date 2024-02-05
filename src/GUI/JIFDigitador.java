@@ -1,18 +1,36 @@
-
 package GUI;
 
-import Domain.Sistema.SistemaSingleton;
 import Domain.Analizador.Solicitud;
+import Domain.Sistema.SistemaSingleton;
+
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 public class JIFDigitador extends javax.swing.JInternalFrame {
+
+    private List<Solicitud> datos;
+    private int oldDatosCount;
+    private boolean flag_actualizar;
+    private boolean flag_datosActualizados;
+
+    private Thread hiloActualizarDatos;
+    protected boolean hiloActualizarDatos_running;
+
+    private Thread hiloActualizarGUI;
+    protected boolean hiloActualizarGUI_running;
 
     public JIFDigitador() {
         initComponents();
         Dimension jfSize = JFWindow.getInstance().getSize();
         Dimension jifSize = this.getSize();
-        this.setLocation((jfSize.width - jifSize.width) / 2, (((jfSize.height-JFWindow.getInstance().jMenuBar1.getHeight()) - jifSize.height) / 2));
+        this.setLocation((jfSize.width - jifSize.width) / 2, (((jfSize.height - JFWindow.getInstance().jF_jMenuBar.getHeight()) - jifSize.height) / 2));
         this.show();
+        this.jLabelActualizando.setText("");
+        initThreads();
     }
 
     /**
@@ -36,7 +54,22 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jListSolicitudes = new javax.swing.JList<>();
-        jButton1 = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        jLabelEstado_URL = new javax.swing.JLabel();
+        jTextFieldEstado_URL = new javax.swing.JTextField();
+        jLabelEstado_Estado = new javax.swing.JLabel();
+        jTextFieldEstado_Estado = new javax.swing.JTextField();
+        jCheckBox4 = new javax.swing.JCheckBox();
+        jCheckBox5 = new javax.swing.JCheckBox();
+        jCheckBox6 = new javax.swing.JCheckBox();
+        jLabelEstado_Analista = new javax.swing.JLabel();
+        jLabelEstado_Digitador = new javax.swing.JLabel();
+        jTextFieldEstado_Analista = new javax.swing.JTextField();
+        jTextFieldEstado_Digitador = new javax.swing.JTextField();
+        jButtonVerGrafico = new javax.swing.JButton();
+        jButtonAbrirCarpeta = new javax.swing.JButton();
+        jButtonVerDatos = new javax.swing.JButton();
+        jLabelActualizando = new javax.swing.JLabel();
 
         setClosable(true);
         setIconifiable(true);
@@ -61,6 +94,12 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         });
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        jTabbedPane1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTabbedPane1MouseClicked(evt);
+            }
+        });
 
         jCheckBox1.setForeground(new java.awt.Color(0, 0, 0));
         jCheckBox1.setText("Análisis de Elementos");
@@ -124,21 +163,177 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                 .addComponent(jCheckBox2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBox3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 170, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 247, Short.MAX_VALUE)
                 .addComponent(jButtonEnviar)
                 .addContainerGap())
         );
 
         jTabbedPane1.addTab("Crear solicitud", jPanel2);
 
-        jListSolicitudes.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        jListSolicitudes.setBackground(new java.awt.Color(0, 0, 0));
+        jListSolicitudes.setForeground(new java.awt.Color(255, 255, 255));
+        jListSolicitudes.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jListSolicitudesValueChanged(evt);
+            }
         });
         jScrollPane1.setViewportView(jListSolicitudes);
 
-        jButton1.setText("Ver Estadísticas");
+        jPanel4.setBackground(new java.awt.Color(0, 0, 0));
+
+        jLabelEstado_URL.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelEstado_URL.setText("URL:");
+
+        jTextFieldEstado_URL.setEditable(false);
+        jTextFieldEstado_URL.setEnabled(false);
+
+        jLabelEstado_Estado.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelEstado_Estado.setText("Estado:");
+
+        jTextFieldEstado_Estado.setEditable(false);
+        jTextFieldEstado_Estado.setEnabled(false);
+        jTextFieldEstado_Estado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldEstado_EstadoActionPerformed(evt);
+            }
+        });
+
+        jCheckBox4.setForeground(new java.awt.Color(0, 0, 0));
+        jCheckBox4.setText("Análisis de Elementos");
+        jCheckBox4.setEnabled(false);
+
+        jCheckBox5.setForeground(new java.awt.Color(0, 0, 0));
+        jCheckBox5.setText("Análisis de Elementos y Extracción");
+        jCheckBox5.setEnabled(false);
+        jCheckBox5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox5ActionPerformed(evt);
+            }
+        });
+
+        jCheckBox6.setForeground(new java.awt.Color(0, 0, 0));
+        jCheckBox6.setText("Análisis de Elementos y Comparación");
+        jCheckBox6.setEnabled(false);
+        jCheckBox6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox6ActionPerformed(evt);
+            }
+        });
+
+        jLabelEstado_Analista.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelEstado_Analista.setText("Analista:");
+
+        jLabelEstado_Digitador.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelEstado_Digitador.setText("Digitador:");
+
+        jTextFieldEstado_Analista.setEditable(false);
+        jTextFieldEstado_Analista.setEnabled(false);
+
+        jTextFieldEstado_Digitador.setEditable(false);
+        jTextFieldEstado_Digitador.setEnabled(false);
+        jTextFieldEstado_Digitador.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldEstado_DigitadorActionPerformed(evt);
+            }
+        });
+
+        jButtonVerGrafico.setText("Ver Gráfico");
+        jButtonVerGrafico.setEnabled(false);
+        jButtonVerGrafico.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonVerGraficoActionPerformed(evt);
+            }
+        });
+
+        jButtonAbrirCarpeta.setText("Abrir Carpeta");
+        jButtonAbrirCarpeta.setEnabled(false);
+        jButtonAbrirCarpeta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAbrirCarpetaActionPerformed(evt);
+            }
+        });
+
+        jButtonVerDatos.setText("Ver Datos");
+        jButtonVerDatos.setEnabled(false);
+        jButtonVerDatos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonVerDatosActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelEstado_Estado)
+                            .addComponent(jLabelEstado_URL))
+                        .addGap(32, 32, 32)
+                        .addComponent(jTextFieldEstado_URL, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelEstado_Analista)
+                            .addComponent(jLabelEstado_Digitador))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextFieldEstado_Digitador, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jTextFieldEstado_Estado, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jTextFieldEstado_Analista, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCheckBox6)
+                            .addComponent(jCheckBox5)
+                            .addComponent(jCheckBox4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jButtonVerDatos, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonAbrirCarpeta, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonVerGrafico, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelEstado_URL)
+                    .addComponent(jTextFieldEstado_URL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabelEstado_Estado)
+                            .addComponent(jTextFieldEstado_Estado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jCheckBox4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabelEstado_Analista)
+                            .addComponent(jTextFieldEstado_Analista, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jCheckBox5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabelEstado_Digitador)
+                            .addComponent(jTextFieldEstado_Digitador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButtonVerGrafico)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGap(29, 29, 29)
+                                .addComponent(jButtonAbrirCarpeta)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButtonVerDatos)
+                            .addComponent(jCheckBox6))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jLabelActualizando.setForeground(new java.awt.Color(0, 0, 0));
+        jLabelActualizando.setText("[Actualizar]");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -147,20 +342,23 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGap(6, 454, Short.MAX_VALUE)
-                        .addComponent(jButton1))
-                    .addComponent(jScrollPane1))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabelActualizando)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 136, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addContainerGap())
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabelActualizando)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Estado", jPanel3);
@@ -190,7 +388,7 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -206,38 +404,229 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
 
     private void jButtonEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnviarActionPerformed
         // TODO add your handling code here:
-     
-        Solicitud solicitud = new Solicitud(
-            this.jTextFieldURL.getText(),
-            this.jCheckBox1.isSelected(),
-            this.jCheckBox2.isSelected(),
-            this.jCheckBox3.isSelected());
-        
-        
-        
-        System.out.println("Nueva Solicitud: " +solicitud);
+        if (this.jTextFieldURL.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "La url está vacía", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        } else {
+            Solicitud solicitud = new Solicitud(
+                    this.jTextFieldURL.getText(),
+                    this.jCheckBox1.isSelected(),
+                    this.jCheckBox2.isSelected(),
+                    this.jCheckBox3.isSelected());
+            if (solicitud.esValida()) {
+                if (SistemaSingleton.getInstance().urlValida(solicitud.getUrl())) {
+                    if (SistemaSingleton.getInstance().agregarSolicitud(solicitud)) {
+                        JOptionPane.showMessageDialog(this, "Solicitud enviada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        this.jTextFieldURL.setText("");
+                        this.jCheckBox1.setSelected(false);
+                        this.jCheckBox2.setSelected(false);
+                        this.jCheckBox3.setSelected(false);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Solicitud no enviada", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Url inválida", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Selecione al menos un tipo de análisis", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            }
 
+        }
     }//GEN-LAST:event_jButtonEnviarActionPerformed
 
     private void formInternalFrameClosed(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosed
         // TODO add your handling code here:
-        JFWindow.getInstance().jMenuItemCrearSolicitud.setEnabled(true);
+        JFWindow.getInstance().jF_jMenuItemCrearSolicitud.setEnabled(true);
+        killThreads();
     }//GEN-LAST:event_formInternalFrameClosed
 
+    private void jButtonVerGraficoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonVerGraficoActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_jButtonVerGraficoActionPerformed
+
+    private void jCheckBox5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox5ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBox5ActionPerformed
+
+    private void jCheckBox6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBox6ActionPerformed
+
+    private void jTextFieldEstado_EstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldEstado_EstadoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldEstado_EstadoActionPerformed
+
+    private void jListSolicitudesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListSolicitudesValueChanged
+        // TODO add your handling code here:
+        if (!this.jListSolicitudes.isSelectionEmpty()) {
+            String listText = this.jListSolicitudes.getSelectedValue();
+            for (Solicitud solicitud : datos) {
+                if (solicitud.getUrl().equals(listText)) {
+                    this.jTextFieldEstado_URL.setText(solicitud.getUrl());
+                    this.jTextFieldEstado_Estado.setText(solicitud.getEstado());
+                    this.jTextFieldEstado_Analista.setText(solicitud.getAnalista());
+                    this.jTextFieldEstado_Digitador.setText(solicitud.getDigitador());
+                    this.jCheckBox4.setSelected(solicitud.doAnalisis1());
+                    this.jCheckBox5.setSelected(solicitud.doAnalisis2());
+                    this.jCheckBox6.setSelected(solicitud.doAnalisis3());
+                    if (solicitud.getEstado().equals(Utility.Utility.ESTADO_FINALIZADO)) {
+                        this.jButtonVerGrafico.setEnabled(true);
+                        this.jButtonAbrirCarpeta.setEnabled(true);
+                        this.jButtonVerDatos.setEnabled(true);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_jListSolicitudesValueChanged
+
+    private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTabbedPane1MouseClicked
+
+    private void jButtonAbrirCarpetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAbrirCarpetaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonAbrirCarpetaActionPerformed
+
+    private void jButtonVerDatosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonVerDatosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonVerDatosActionPerformed
+
+    private void jTextFieldEstado_DigitadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldEstado_DigitadorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldEstado_DigitadorActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonAbrirCarpeta;
     private javax.swing.JButton jButtonEnviar;
+    private javax.swing.JButton jButtonVerDatos;
+    private javax.swing.JButton jButtonVerGrafico;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBox3;
+    private javax.swing.JCheckBox jCheckBox4;
+    private javax.swing.JCheckBox jCheckBox5;
+    private javax.swing.JCheckBox jCheckBox6;
+    private javax.swing.JLabel jLabelActualizando;
+    private javax.swing.JLabel jLabelEstado_Analista;
+    private javax.swing.JLabel jLabelEstado_Digitador;
+    private javax.swing.JLabel jLabelEstado_Estado;
+    private javax.swing.JLabel jLabelEstado_URL;
     private javax.swing.JLabel jLabelURL;
     private javax.swing.JList<String> jListSolicitudes;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextField jTextFieldEstado_Analista;
+    private javax.swing.JTextField jTextFieldEstado_Digitador;
+    private javax.swing.JTextField jTextFieldEstado_Estado;
+    private javax.swing.JTextField jTextFieldEstado_URL;
     private javax.swing.JTextField jTextFieldURL;
     // End of variables declaration//GEN-END:variables
+
+    private void initThreads() {
+        this.datos = new ArrayList<>();
+        this.flag_actualizar = false;
+        this.flag_datosActualizados = true;
+
+        this.hiloActualizarDatos_running = true;
+        this.hiloActualizarDatos = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (hiloActualizarDatos_running) {
+                    try {
+                        int n = 1000;
+                        Thread.sleep(n);
+                        actualizarDatos();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(JIFDigitador.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                System.out.println(hiloActualizarDatos.getName() + " killed");
+            }//run
+        }, "hiloActualizarDatos_JIFDigitador");
+        this.hiloActualizarDatos.start();
+
+        this.hiloActualizarGUI_running = true;
+        this.hiloActualizarGUI = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (hiloActualizarDatos_running) {
+                    actualizarGUI();
+                }
+                System.out.println(hiloActualizarGUI.getName() + " killed");
+            }//run
+
+        }, "hiloActualizarGUI_JIFDigitador");
+        this.hiloActualizarGUI.start();
+
+    }//initThreads
+
+    public synchronized void killThreads() {
+        this.hiloActualizarDatos_running = false;
+        this.hiloActualizarGUI_running = false;
+        this.flag_actualizar = true;
+        notifyAll();
+    }//killThreads
+
+    private synchronized void actualizarDatos() {
+        //request - response
+        this.flag_datosActualizados = false;
+        if (SistemaSingleton.getInstance().getUsuario() != null) {
+            oldDatosCount = datos.size();
+            this.datos = SistemaSingleton.getInstance().misDatos(SistemaSingleton.getInstance().getUsuario().getUsername());
+            this.flag_datosActualizados = true;
+            if (datos.size() > oldDatosCount) {
+                this.flag_actualizar = true;
+                notifyAll();
+            }
+        }
+    }//actualizarDatos
+
+    private synchronized void actualizarGUI() {
+        this.jLabelActualizando.setText("");
+        if (!flag_actualizar || !this.flag_datosActualizados) {
+            try {
+                wait();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(JIFAdministrador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            try {
+                int n = 1000;
+                this.jLabelActualizando.setText("Actualizando.");
+                Thread.sleep(n);
+                this.jLabelActualizando.setText("Actualizando..");
+                Thread.sleep(n);
+                this.jLabelActualizando.setText("Actualizando...");
+                Thread.sleep(n);
+                this.jLabelActualizando.setText("Actualizado!");
+                this.flag_actualizar = false;
+                actualizarLista();
+                Thread.sleep(n * 2);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(JIFDigitador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+    }//actualizarGUI
+
+    private void actualizarLista() {
+        String[] datosLista = new String[this.datos.size()];
+        for (Solicitud solicitud : this.datos) {
+            datosLista[datos.indexOf(solicitud)] = solicitud.getUrl();
+        }
+        jListSolicitudes.setModel(new javax.swing.AbstractListModel<String>() {
+            public int getSize() {
+                return datosLista.length;
+            }
+
+            public String getElementAt(int i) {
+                return datosLista[i];
+            }
+        });
+    }//actualizarLista
+
 }//class

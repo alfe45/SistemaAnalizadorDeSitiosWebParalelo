@@ -1,5 +1,6 @@
 package Domain.Sistema;
 
+import Business.SolicitudBusiness;
 import Business.UsuarioBusiness;
 import Utility.Encryptor;
 import Utility.Utility;
@@ -9,6 +10,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdom.JDOMException;
 import Domain.Analizador.AnalizadorURL;
+import Domain.Analizador.Solicitud;
+import java.security.KeyManagementException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SistemaSingleton {
 
@@ -20,12 +25,16 @@ public class SistemaSingleton {
     private AnalizadorURL analizadorURL;
 
     private UsuarioBusiness usuarioBusiness;
+    private SolicitudBusiness solicitudBusiness;
+
+    private Thread hiloSolicitudes;
 
     private SistemaSingleton() {
         this.usuario = null;
         this.analizadorURL = null;
         try {
             this.usuarioBusiness = new UsuarioBusiness();
+            this.solicitudBusiness = new SolicitudBusiness();
         } catch (JDOMException | IOException | NoSuchAlgorithmException ex) {
             Logger.getLogger(SistemaSingleton.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -58,7 +67,7 @@ public class SistemaSingleton {
         } else {
             if (usuario.getPassword().equals(Encryptor.encrypt(password, Encryptor.SHA256))) {
                 this.usuario = usuario;
-                System.out.println("Sistema analizador activado: "+activarAnalizadorURL());
+                activarAnalizadorURL();
                 return true;
             } else {
                 return false;
@@ -71,19 +80,14 @@ public class SistemaSingleton {
         this.analizadorURL = null;
     }//logOut
 
-    public boolean UserIsLogged() {
+    public boolean userIsLogged() {
         return this.usuario != null;
     }//isLogged
 
-    @Override
-    public String toString() {
-        return "SistemaSingleton{" + "usuario=" + usuario + ", analizadorURL=" + analizadorURL + ", usuarioData=" + usuarioBusiness + '}';
-    }
-
     //METODOS PRIVADOS
     private boolean activarAnalizadorURL() {
-        if (this.usuario.tipo().equals(Utility.EXAMINADOR)) {
-            if (((UsuarioExaminador) this.usuario).getRol().equals(Utility.ROL_ANALISTA)) {
+        if (this.usuario.tipo().contains(Utility.EXAMINADOR)) {
+            if (this.usuario.tipo().contains(Utility.ROL_ANALISTA)) {
                 this.analizadorURL = new AnalizadorURL();
                 this.analizadorURL.setAnalista((UsuarioExaminador) this.usuario);
                 return true;
@@ -92,5 +96,56 @@ public class SistemaSingleton {
         }
         return false;
     }//activarAnalizador
+
+    public boolean agregarSolicitud(Solicitud solicitud) {
+        if (solicitud.esValida()) {
+            try {
+                return this.solicitudBusiness.saveNewSolicitud(solicitud);
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(SistemaSingleton.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (KeyManagementException ex) {
+                Logger.getLogger(SistemaSingleton.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(SistemaSingleton.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return false;
+    }//agregarSolicitud
+
+    public boolean urlValida(String url) {
+        return AnalizadorURL.validarURL(url);
+    }//urlValida
+
+    public List<Solicitud> misDatos(String username) {
+        Usuario usuario = this.usuarioBusiness.getUsuario(username);
+        List<Solicitud> datos = new ArrayList<>();
+        if (usuario != null) {
+            if (this.usuario.tipo().contains(Utility.DIGITADOR)) {
+                datos = this.solicitudBusiness.loadSolicitudes(username);
+                return datos;
+            }
+            if (this.usuario.tipo().contains(Utility.ROL_GESTOR)) {
+                datos = this.solicitudBusiness.loadAllSolicitudes();
+                return datos;
+            }
+        }
+        return null;
+    }//misDatos
+
+    public boolean asignarSolicitud(Solicitud solicitud, String analistaUsername){
+        if (!analistaUsername.isBlank()) {
+            solicitud.setAnalista(analistaUsername);
+            try {
+                return this.solicitudBusiness.overrideSolicitud(solicitud);
+            } catch (IOException ex) {
+                Logger.getLogger(SistemaSingleton.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(SistemaSingleton.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (KeyManagementException ex) {
+                Logger.getLogger(SistemaSingleton.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return false;
+    }//asignarSolicitud;
 
 }//class

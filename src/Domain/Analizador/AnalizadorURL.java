@@ -1,16 +1,20 @@
 package Domain.Analizador;
 
 import Domain.Sistema.UsuarioExaminador;
+import GUI.JFWindow;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import javax.swing.JOptionPane;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -26,11 +30,10 @@ public class AnalizadorURL {
     public void setAnalista(UsuarioExaminador analista) {
         this.analista = analista;
     }
-    
 
     public boolean analizarSolicitud(Solicitud solicitud, int subprocesos, int esclavos) throws IOException, NoSuchAlgorithmException, KeyManagementException {
         if (subprocesos >= 1 && esclavos >= 1) {
-            Analisis analisis =  new Analisis(solicitud, subprocesos, esclavos);
+            Analisis analisis = new Analisis(solicitud, subprocesos, esclavos);
             this.analisis.add(analisis);
             analisis.start();
             return true;
@@ -38,6 +41,29 @@ public class AnalizadorURL {
             return false;
         }
     }//analizarSolicitud
+
+    public static boolean validarURL(String url) {
+
+        try {
+            desactivarCertificado();
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(AnalizadorURL.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } catch (KeyManagementException ex) {
+            Logger.getLogger(AnalizadorURL.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        try {
+            Jsoup.connect(url).get();
+        } catch (java.lang.IllegalArgumentException ex) {
+            return false;
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(JFWindow.getInstance(), "Error: 403: página no alcanzable", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }//conectarURL
 
     //METODOS PROTEGIDOS
     protected static Document conectarURL(String url) throws IOException, NoSuchAlgorithmException, KeyManagementException {

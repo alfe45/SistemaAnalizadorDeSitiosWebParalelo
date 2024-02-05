@@ -2,10 +2,28 @@ package GUI;
 
 import Domain.Sistema.SistemaSingleton;
 import Utility.Utility;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 
 public class JFWindow extends javax.swing.JFrame {
 
     private static JFWindow jFWindow;
+
+    protected static JIFAdministrador jIFAdministrador;
+    protected static JIFDigitador jIFDigitador;
+    protected static JIFGestor jIFGestor;
+    protected static JIFAnalista jIFAnalista;
+
+    protected JMenuBar jF_jMenuBar;
+    protected JMenu jF_jMenuFile;
+    protected JMenuItem jF_jMenuItemGestionUsuarios;
+    protected JMenuItem jF_jMenuItemCrearSolicitud;
+    protected JMenuItem jF_jMenuItemGestionAnalisis;
+    protected JMenuItem jF_jMenuItemGestionSolicitudes;
+    protected JMenuItem jF_jMenuItemLogOut;
+
+    protected JPLogin jF_jPLoginJF;
 
     private JFWindow() {
         initComponents();
@@ -103,71 +121,104 @@ public class JFWindow extends javax.swing.JFrame {
     private void jMenuItemGestionUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemGestionUsuariosActionPerformed
         // TODO add your handling code here:
         JFWindow.getInstance().jMenuItemGestionUsuarios.setEnabled(false);
-        this.add(new JIFAdministrador());
+        JFWindow.jIFAdministrador = new JIFAdministrador();
+        this.add(jIFAdministrador);
     }//GEN-LAST:event_jMenuItemGestionUsuariosActionPerformed
 
     private void jMenuItemCrearSolicitudActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemCrearSolicitudActionPerformed
         // TODO add your handling code here:
         jMenuItemCrearSolicitud.setEnabled(false);
-        this.add(new JIFDigitador());
+        JFWindow.jIFDigitador = new JIFDigitador();
+        this.add(jIFDigitador);
     }//GEN-LAST:event_jMenuItemCrearSolicitudActionPerformed
 
     private void jMenuItemGestionAnalisisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemGestionAnalisisActionPerformed
         // TODO add your handling code here:
         JFWindow.getInstance().jMenuItemGestionAnalisis.setEnabled(false);
-        this.add(new JIFAnalista());
+        JFWindow.jIFAnalista = new JIFAnalista();
+        this.add(jIFAnalista);
     }//GEN-LAST:event_jMenuItemGestionAnalisisActionPerformed
 
     private void jMenuItemGestionSolicitudesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemGestionSolicitudesActionPerformed
         // TODO add your handling code here:
         JFWindow.getInstance().jMenuItemGestionSolicitudes.setEnabled(false);
+        JFWindow.jIFGestor = new JIFGestor();
         this.add(new JIFGestor());
     }//GEN-LAST:event_jMenuItemGestionSolicitudesActionPerformed
 
     private void jMenuItemLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLogOutActionPerformed
         // TODO add your handling code here:
-        this.add(this.jMenuBar1);
-        this.jMenuBar1.setVisible(false);
         SistemaSingleton.getInstance().logOut();
-        this.add(new JPLogin());  
+
+        this.jMenuFile.removeAll();
+        this.jMenuBar1.setVisible(false);
+        this.jF_jPLoginJF = new JPLogin();
+        this.add(this.jF_jPLoginJF);
+
+        if (JFWindow.jIFAdministrador != null) {
+            this.remove(JFWindow.jIFAdministrador);
+            this.jF_jMenuItemGestionUsuarios.setEnabled(true);
+            JFWindow.jIFAdministrador.killThreads();
+        }
+        if (JFWindow.jIFDigitador != null) {
+            this.remove(JFWindow.jIFDigitador);
+            this.jF_jMenuItemCrearSolicitud.setEnabled(true);
+            JFWindow.jIFDigitador.killThreads();
+        }
+        if (JFWindow.jIFGestor != null) {
+            this.remove(JFWindow.jIFGestor);
+            this.jF_jMenuItemGestionSolicitudes.setEnabled(true);
+//            JFWindow.jIFGestor.killThreads();
+        }
+        if (JFWindow.jIFAnalista != null) {
+            this.remove(JFWindow.jIFAnalista);
+            this.jF_jMenuItemGestionAnalisis.setEnabled(true);
+//            JFWindow.jIFAnalista.killThreads();
+        }
+
         JFWindow.getInstance().setTitle("Analizador de Sitios Web Paralelo");
         this.repaint();
     }//GEN-LAST:event_jMenuItemLogOutActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    protected javax.swing.JMenuBar jMenuBar1;
-    protected javax.swing.JMenu jMenuFile;
-    protected javax.swing.JMenuItem jMenuItemCrearSolicitud;
-    protected javax.swing.JMenuItem jMenuItemGestionAnalisis;
-    protected javax.swing.JMenuItem jMenuItemGestionSolicitudes;
-    protected javax.swing.JMenuItem jMenuItemGestionUsuarios;
-    protected javax.swing.JMenuItem jMenuItemLogOut;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu jMenuFile;
+    private javax.swing.JMenuItem jMenuItemCrearSolicitud;
+    private javax.swing.JMenuItem jMenuItemGestionAnalisis;
+    private javax.swing.JMenuItem jMenuItemGestionSolicitudes;
+    private javax.swing.JMenuItem jMenuItemGestionUsuarios;
+    private javax.swing.JMenuItem jMenuItemLogOut;
     // End of variables declaration//GEN-END:variables
 
-    private void init() {
-        this.jMenuBar1.setVisible(false);
-        this.jMenuBar1.getMenu(this.jMenuBar1.getComponentIndex(this.jMenuFile)).removeAll();
-        this.add(new JPLogin());
+    private void init() {//done
+        this.jF_jMenuBar = this.jMenuBar1;
+        this.jF_jMenuFile = this.jMenuFile;
+        this.jF_jMenuItemGestionUsuarios = this.jMenuItemGestionUsuarios;
+        this.jF_jMenuItemCrearSolicitud = this.jMenuItemCrearSolicitud;
+        this.jF_jMenuItemGestionAnalisis = this.jMenuItemGestionAnalisis;
+        this.jF_jMenuItemGestionSolicitudes = this.jMenuItemGestionSolicitudes;
+        this.jF_jMenuItemLogOut = this.jMenuItemLogOut;
+
+        this.jF_jMenuBar.setVisible(false);
+        this.jF_jMenuFile.removeAll();
+        this.jF_jPLoginJF = new JPLogin();
+        this.add(this.jF_jPLoginJF);
     }//init
 
-    public void administradorGUI() {
-        this.jMenuBar1.getMenu(this.jMenuBar1.getComponentIndex(this.jMenuFile)).add(this.jMenuItemGestionUsuarios);
-    }//administradorGUI
-
-    public void examinadorGUI(String rol) {
-        switch (rol) {
-            case Utility.ROL_DIGITADOR:
-                this.jMenuBar1.getMenu(this.jMenuBar1.getComponentIndex(this.jMenuFile)).add(this.jMenuItemCrearSolicitud);
-                break;
-            case Utility.ROL_GESTOR:
-                this.jMenuBar1.getMenu(this.jMenuBar1.getComponentIndex(this.jMenuFile)).add(this.jMenuItemGestionSolicitudes);
-                break;
-            case Utility.ROL_ANALISTA:
-                this.jMenuBar1.getMenu(this.jMenuBar1.getComponentIndex(this.jMenuFile)).add(this.jMenuItemGestionAnalisis);
-                break;
-            default:
-                throw new AssertionError();
+    public void activarGUIMenuPrincipal() {
+        if (SistemaSingleton.getInstance().getUsuario().tipo().contains(Utility.ADMIN)) {
+            this.jF_jMenuFile.add(this.jF_jMenuItemGestionUsuarios);
+        } else {
+            if (SistemaSingleton.getInstance().getUsuario().tipo().contains(Utility.ROL_DIGITADOR)) {
+                this.jF_jMenuFile.add(this.jF_jMenuItemCrearSolicitud);
+            }
+            if (SistemaSingleton.getInstance().getUsuario().tipo().contains(Utility.ROL_GESTOR)) {
+                this.jF_jMenuFile.add(this.jF_jMenuItemGestionSolicitudes);
+            }
+            if (SistemaSingleton.getInstance().getUsuario().tipo().contains(Utility.ROL_ANALISTA)) {
+                this.jF_jMenuFile.add(this.jF_jMenuItemGestionAnalisis);
+            }
         }
-    }//examinadorGUI
+    }//activarGUIMenuPrincipal
 
 }//class

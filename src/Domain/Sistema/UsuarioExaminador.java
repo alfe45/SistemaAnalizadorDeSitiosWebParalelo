@@ -19,13 +19,8 @@ public class UsuarioExaminador extends Usuario {
     }
 
     @Override
-    public String toString() {
-        return super.toString().substring(0, super.toString().length() - 1) + ", rol=" + rol + '}';
-    }
-    
-    @Override
     public String tipo() {
-        return Utility.EXAMINADOR;
+        return Utility.EXAMINADOR + "-" + this.rol;
     }//tipo
 
 }//class

@@ -43,4 +43,8 @@ public class UsuarioBusiness {
         return this.usuarioData.loadNombresUsuarios();
     }//loadUsuarios
     
+    public List<String> loadNombresUsuariosByRol(String rol) {
+        return this.usuarioData.loadNombresUsuariosByRol(rol);
+    }//loadNombresUsuariosByRol
+    
 }//class

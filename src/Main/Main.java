@@ -8,7 +8,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 /*
     C22910 ALEXANDER FERNANDEZ D.
     KEVING VEGA
-    FABIO 
+    FABIO
  */
 
 public class Main {

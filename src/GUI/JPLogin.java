@@ -140,17 +140,18 @@ public class JPLogin extends javax.swing.JPanel {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         String username = this.jTextFieldNombreUsuario.getText();
-        String password = String.copyValueOf( this.jPasswordField.getPassword());
+        String password = String.copyValueOf(this.jPasswordField.getPassword());
 
         if (!username.equals("") && !password.equals("")) {
             try {
+//                JPLogin panel = this;
                 boolean logged = SistemaSingleton.getInstance().login(username, password);
-                JPLogin jPLogin = this;
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        
                         try {
-                            int n = 300;
+                            int n = 100;
                             jLabelInfoLogin.setText("Loading");
                             Thread.sleep(n);
                             jLabelInfoLogin.setText("Loading.");
@@ -160,13 +161,8 @@ public class JPLogin extends javax.swing.JPanel {
                             jLabelInfoLogin.setText("Loading...");
                             Thread.sleep(n);
                             if (logged) {
-                                if (SistemaSingleton.getInstance().getUsuario().tipo().equals(Utility.ADMIN)) {
-                                    JFWindow.getInstance().administradorGUI();
-                                } else {
-                                    String rol = ((UsuarioExaminador) SistemaSingleton.getInstance().getUsuario()).getRol();
-                                    JFWindow.getInstance().examinadorGUI(rol);
-                                }
-                                JFWindow.getInstance().jMenuBar1.getMenu(JFWindow.getInstance().jMenuBar1.getComponentIndex(JFWindow.getInstance().jMenuFile)).add(JFWindow.getInstance().jMenuItemLogOut);
+                                JFWindow.getInstance().activarGUIMenuPrincipal();
+                                JFWindow.getInstance().jF_jMenuFile.add(JFWindow.getInstance().jF_jMenuItemLogOut);
                                 jLabelInfoLogin.setText("Logged!");
                                 Thread.sleep(n);
                             } else {
@@ -175,10 +171,11 @@ public class JPLogin extends javax.swing.JPanel {
                         } catch (InterruptedException ex) {
                             Logger.getLogger(JPLogin.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        if (SistemaSingleton.getInstance().UserIsLogged()) {
-                            JFWindow.getInstance().remove(jPLogin);
-                            JFWindow.getInstance().jMenuBar1.setVisible(true);
-                            JFWindow.getInstance().setTitle("Analizador de Sitios Web Paralelo ("+SistemaSingleton.getInstance().getUsuario().tipo()+")");
+                        if (SistemaSingleton.getInstance().userIsLogged()) {
+                            
+                            JFWindow.getInstance().remove(JFWindow.getInstance().jF_jPLoginJF);
+                            JFWindow.getInstance().jF_jMenuBar.setVisible(true);
+                            JFWindow.getInstance().setTitle("Analizador de Sitios Web Paralelo (" + SistemaSingleton.getInstance().getUsuario().tipo() + ")");
                             JFWindow.getInstance().repaint();
                         }
                     }//run
@@ -224,7 +221,7 @@ public class JPLogin extends javax.swing.JPanel {
 
     private void jPasswordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordFieldActionPerformed
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_jPasswordFieldActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

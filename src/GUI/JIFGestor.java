@@ -1,16 +1,37 @@
-
 package GUI;
 
+import Domain.Analizador.Solicitud;
+import Domain.Sistema.SistemaSingleton;
+import Utility.Utility;
+
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 public class JIFGestor extends javax.swing.JInternalFrame {
+
+    private List<Solicitud> datos;
+    private int oldDatosCount;
+    private boolean flag_actualizar;
+    private boolean flag_datosActualizados;
+
+    private Thread hiloActualizarDatos;
+    protected boolean hiloActualizarDatos_running;
+
+    private Thread hiloActualizarGUI;
+    protected boolean hiloActualizarGUI_running;
 
     public JIFGestor() {
         initComponents();
         Dimension jfSize = JFWindow.getInstance().getSize();
         Dimension jifSize = this.getSize();
-        this.setLocation((jfSize.width - jifSize.width) / 2, (((jfSize.height-JFWindow.getInstance().jMenuBar1.getHeight()) - jifSize.height) / 2));
+        this.setLocation((jfSize.width - jifSize.width) / 2, (((jfSize.height - JFWindow.getInstance().jF_jMenuBar.getHeight()) - jifSize.height) / 2));
         this.show();
+        this.jLabelActualizando.setText("");
+        initThreads();
     }
 
     /**
@@ -23,10 +44,24 @@ public class JIFGestor extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jListSolicitudesNoAsignadas = new javax.swing.JList<>();
+        jLabelActualizando = new javax.swing.JLabel();
+        jButtonAsignar = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jTextFieldPorcentaje = new javax.swing.JTextField();
+        jLabelEstado = new javax.swing.JLabel();
+        jLabelPorcentaje = new javax.swing.JLabel();
+        jTextFieldEstado1 = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jListSolicitudesAsignadas = new javax.swing.JList<>();
+        jLabelSolicitudesNoAsignadas = new javax.swing.JLabel();
 
         setClosable(true);
         setIconifiable(true);
-        setTitle("Gestor");
+        setTitle("Digitador");
         setVisible(true);
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
@@ -48,26 +83,134 @@ public class JIFGestor extends javax.swing.JInternalFrame {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
+        jListSolicitudesNoAsignadas.setBackground(new java.awt.Color(0, 0, 0));
+        jListSolicitudesNoAsignadas.setForeground(new java.awt.Color(255, 255, 255));
+        jListSolicitudesNoAsignadas.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane1.setViewportView(jListSolicitudesNoAsignadas);
+
+        jLabelActualizando.setForeground(new java.awt.Color(0, 0, 0));
+        jLabelActualizando.setText("[Actualizando]");
+
+        jButtonAsignar.setText("Asignar");
+        jButtonAsignar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAsignarActionPerformed(evt);
+            }
+        });
+
+        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox1ItemStateChanged(evt);
+            }
+        });
+
+        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel1.setText("Analista:");
+
+        jPanel2.setBackground(new java.awt.Color(0, 0, 0));
+
+        jTextFieldPorcentaje.setEnabled(false);
+
+        jLabelEstado.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelEstado.setText("Estado:");
+
+        jLabelPorcentaje.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelPorcentaje.setText("Porcentaje:");
+
+        jTextFieldEstado1.setEnabled(false);
+
+        jScrollPane2.setViewportView(jListSolicitudesAsignadas);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2)
+                        .addContainerGap())
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabelEstado)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldEstado1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabelPorcentaje)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldPorcentaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 90, Short.MAX_VALUE))))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextFieldEstado1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelEstado)
+                    .addComponent(jLabelPorcentaje)
+                    .addComponent(jTextFieldPorcentaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jLabelSolicitudesNoAsignadas.setForeground(new java.awt.Color(0, 0, 0));
+        jLabelSolicitudesNoAsignadas.setText("Solicitudes sin asignar:");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 588, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabelActualizando))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabelSolicitudesNoAsignadas)
+                            .addComponent(jButtonAsignar, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 364, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addGap(2, 2, 2)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonAsignar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabelSolicitudesNoAsignadas))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabelActualizando)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -75,11 +218,184 @@ public class JIFGestor extends javax.swing.JInternalFrame {
 
     private void formInternalFrameClosed(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosed
         // TODO add your handling code here:
-        JFWindow.getInstance().jMenuItemGestionSolicitudes.setEnabled(true);
+        JFWindow.getInstance().jF_jMenuItemGestionSolicitudes.setEnabled(true);
+        killThreads();
     }//GEN-LAST:event_formInternalFrameClosed
 
+    private void jButtonAsignarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAsignarActionPerformed
+        // TODO add your handling code here:
+        for (Solicitud dato : datos) {
+            if (dato.getUrl().equals(this.jListSolicitudesNoAsignadas.getSelectedValue())) {
+                if (SistemaSingleton.getInstance().asignarSolicitud(dato, this.jComboBox1.getSelectedItem().toString())) {
+                    JOptionPane.showMessageDialog(this, "Solicitud asignada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    synchronized (this) {
+                        this.flag_actualizar = true;
+                        notify();
+                    }
+                    break;
+                } else {
+                    JOptionPane.showMessageDialog(this, "Solicitud no asignada", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }//GEN-LAST:event_jButtonAsignarActionPerformed
+
+    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
+        // TODO add your handling code here:
+        synchronized (this) {
+            this.flag_actualizar = true;
+            notifyAll();
+        }
+    }//GEN-LAST:event_jComboBox1ItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAsignar;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabelActualizando;
+    private javax.swing.JLabel jLabelEstado;
+    private javax.swing.JLabel jLabelPorcentaje;
+    private javax.swing.JLabel jLabelSolicitudesNoAsignadas;
+    private javax.swing.JList<String> jListSolicitudesAsignadas;
+    private javax.swing.JList<String> jListSolicitudesNoAsignadas;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextField jTextFieldEstado1;
+    private javax.swing.JTextField jTextFieldPorcentaje;
     // End of variables declaration//GEN-END:variables
+
+    private void initThreads() {
+        this.datos = new ArrayList<>();
+        this.flag_actualizar = false;
+        this.flag_datosActualizados = true;
+
+        this.hiloActualizarDatos_running = true;
+        this.hiloActualizarDatos = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (hiloActualizarDatos_running) {
+                    try {
+                        int n = 1000;
+                        Thread.sleep(n);
+                        actualizarDatos();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(JIFGestor.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                System.out.println(hiloActualizarDatos.getName() + " killed");
+            }//run
+        }, "hiloActualizarDatos_JIFDigitador");
+        this.hiloActualizarDatos.start();
+
+        this.hiloActualizarGUI_running = true;
+        this.hiloActualizarGUI = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (hiloActualizarDatos_running) {
+                    actualizarGUI();
+                }
+                System.out.println(hiloActualizarGUI.getName() + " killed");
+            }//run
+
+        }, "hiloActualizarGUI_JIFDigitador");
+        this.hiloActualizarGUI.start();
+
+    }//initThreads
+
+    public synchronized void killThreads() {
+        this.hiloActualizarDatos_running = false;
+        this.hiloActualizarGUI_running = false;
+        this.flag_actualizar = true;
+        notifyAll();
+    }//killThreads
+
+    private synchronized void actualizarDatos() {
+        //request - response
+        this.flag_datosActualizados = false;
+        if (SistemaSingleton.getInstance().getUsuario() != null) {
+            oldDatosCount = datos.size();
+            this.datos = SistemaSingleton.getInstance().misDatos(SistemaSingleton.getInstance().getUsuario().getUsername());
+            this.flag_datosActualizados = true;
+            if (datos.size() > oldDatosCount) {
+                this.flag_actualizar = true;
+                actualizarJcomboBox();
+                notifyAll();
+            }
+        }
+    }//actualizarDatos
+
+    private synchronized void actualizarGUI() {
+        this.jLabelActualizando.setText("");
+        if (!flag_actualizar || !this.flag_datosActualizados) {
+            try {
+                wait();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(JIFAdministrador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            try {
+                int n = 100;
+                actualizarListas();
+                this.jLabelActualizando.setText("Actualizando.");
+                Thread.sleep(n);
+                this.jLabelActualizando.setText("Actualizando..");
+                Thread.sleep(n);
+                this.jLabelActualizando.setText("Actualizando...");
+                Thread.sleep(n);
+                this.jLabelActualizando.setText("Actualizado!");
+                this.flag_actualizar = false;
+                Thread.sleep(n * 2);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(JIFGestor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+    }//actualizarGUI
+
+    private void actualizarListas() {
+        List<String> temp = new ArrayList<>();
+        for (Solicitud solicitud : this.datos) {
+            if (solicitud.getAnalista().equals(Utility.NO_ASIGNADO)) {
+                temp.add(solicitud.getUrl());
+            }
+        }
+        String[] strings = temp.toArray(new String[0]);
+        jListSolicitudesNoAsignadas.setModel(new javax.swing.AbstractListModel<String>() {
+            public int getSize() {
+                return strings.length;
+            }
+
+            public String getElementAt(int i) {
+                return strings[i];
+            }
+        });
+        temp.clear();
+
+        for (Solicitud solicitud : this.datos) {
+            if (solicitud.getAnalista().equals(this.jComboBox1.getSelectedItem().toString())) {
+                temp.add(solicitud.getUrl());
+            }
+        }
+        String[] strings2 = temp.toArray(new String[0]);
+        jListSolicitudesAsignadas.setModel(new javax.swing.AbstractListModel<String>() {
+            public int getSize() {
+                return strings2.length;
+            }
+
+            public String getElementAt(int i) {
+                return strings2[i];
+            }
+        });
+    }//actualizarListas
+
+    private void actualizarJcomboBox() {
+        String[] strings = SistemaSingleton.getInstance().getUsuarioBusiness().loadNombresUsuariosByRol(Utility.ROL_ANALISTA).toArray(new String[0]);
+        this.jComboBox1.setModel(
+                new javax.swing.DefaultComboBoxModel<>(
+                        strings)
+        );
+    }//actualizarJcomboBox
+
 }//class

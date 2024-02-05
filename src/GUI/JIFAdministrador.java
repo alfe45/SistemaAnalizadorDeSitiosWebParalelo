@@ -16,12 +16,24 @@ import javax.swing.JOptionPane;
 
 public class JIFAdministrador extends javax.swing.JInternalFrame {
 
+    private String[] datos;
+    private int oldDatosCount;
+    private boolean flag_actualizarLista;
+    private boolean flag_datosActualizados;
+
+    private Thread hiloActualizarDatos;
+    protected boolean hiloActualizarDatos_running;
+
+    private Thread hiloActualizarGUI;
+    protected boolean hiloActualizarGUI_running;
+
     public JIFAdministrador() {
         initComponents();
         Dimension jfSize = JFWindow.getInstance().getSize();
         Dimension jifSize = this.getSize();
-        this.setLocation((jfSize.width - jifSize.width) / 2, (((jfSize.height-JFWindow.getInstance().jMenuBar1.getHeight()) - jifSize.height) / 2));
+        this.setLocation((jfSize.width - jifSize.width) / 2, (((jfSize.height - JFWindow.getInstance().jF_jMenuBar.getHeight()) - jifSize.height) / 2));
         this.show();
+        initThreads();
     }
 
     /**
@@ -34,7 +46,7 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jTabbedPane = new javax.swing.JTabbedPane();
         RegistrarUsuario = new javax.swing.JPanel();
         jTextFieldNombreUsuarioRegistrar = new javax.swing.JTextField();
         jTextFieldPasswordRegistrar = new javax.swing.JTextField();
@@ -94,11 +106,6 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
         jComboBoxRol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { Utility.ROL_DIGITADOR, Utility.ROL_GESTOR, Utility.ROL_ANALISTA}));
 
         jCheckBoxAdmin.setText("ADMIN");
-        jCheckBoxAdmin.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jCheckBoxAdminMouseClicked(evt);
-            }
-        });
         jCheckBoxAdmin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBoxAdminActionPerformed(evt);
@@ -160,7 +167,13 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Registrar Usuario", RegistrarUsuario);
+        jTabbedPane.addTab("Registrar Usuario", RegistrarUsuario);
+
+        jPanelEliminarUsuario.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jPanelEliminarUsuarioMousePressed(evt);
+            }
+        });
 
         jButtonBuscarEliminar.setText("Buscar");
         jButtonBuscarEliminar.addActionListener(new java.awt.event.ActionListener() {
@@ -180,6 +193,7 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
         jLabelUsernameEliminar.setForeground(new java.awt.Color(0, 0, 0));
         jLabelUsernameEliminar.setText("Username:");
 
+        jListUsuarios.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jListUsuarios.setEnabled(false);
         jListUsuarios.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -226,7 +240,7 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Eliminar Usuario", jPanelEliminarUsuario);
+        jTabbedPane.addTab("Eliminar Usuario", jPanelEliminarUsuario);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -234,14 +248,14 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
+                .addComponent(jTabbedPane)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
+                .addComponent(jTabbedPane)
                 .addContainerGap())
         );
 
@@ -262,14 +276,16 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonRegistrarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegistrarUsuarioActionPerformed
-        // TODO add your handling code here:
+
         String username = this.jTextFieldNombreUsuarioRegistrar.getText();
         String password = this.jTextFieldPasswordRegistrar.getText();
 
         if (username.equals("") || password.equals("")) {
             JOptionPane.showMessageDialog(this, "Campos vacíos", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
+            //request - response
             if (!SistemaSingleton.getInstance().getUsuarioBusiness().exists(username)) {
+
                 Usuario usuario = null;
                 if (this.jCheckBoxAdmin.isSelected()) {
                     usuario = new UsuarioAdministrador(username, password);
@@ -278,16 +294,13 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
                     ((UsuarioAdministrador) SistemaSingleton.getInstance().getUsuario()).asignarRol((UsuarioExaminador) usuario, this.jComboBoxRol.getSelectedItem().toString());
                 }
                 try {
-                    try {
-                        if (SistemaSingleton.getInstance().getUsuarioBusiness().saveNewUsuario(usuario)) {
-                            JOptionPane.showMessageDialog(this, "Usuario registrado con exito", "Exito", JOptionPane.INFORMATION_MESSAGE);
-                        } else {
-                            JOptionPane.showMessageDialog(this, "Usuario no registrado", "Error", JOptionPane.ERROR_MESSAGE);
-                        }
-                    } catch (NoSuchAlgorithmException ex) {
-                        Logger.getLogger(JIFAdministrador.class.getName()).log(Level.SEVERE, null, ex);
+                    //request - response
+                    if (SistemaSingleton.getInstance().getUsuarioBusiness().saveNewUsuario(usuario)) {
+                        JOptionPane.showMessageDialog(this, "Usuario registrado con exito", "Exito", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Usuario no registrado", "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                } catch (IOException ex) {
+                } catch (IOException | NoSuchAlgorithmException ex) {
                     Logger.getLogger(JIFAdministrador.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 this.jTextFieldNombreUsuarioRegistrar.setText("");
@@ -302,11 +315,6 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButtonRegistrarUsuarioActionPerformed
 
-    private void jCheckBoxAdminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBoxAdminMouseClicked
-        // TODO add your handling code here:
-
-    }//GEN-LAST:event_jCheckBoxAdminMouseClicked
-
     private void jCheckBoxAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxAdminActionPerformed
         // TODO add your handling code here:
         if (jCheckBoxAdmin.isSelected()) {
@@ -320,19 +328,22 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
 
     private void jButtonEliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarUsuarioActionPerformed
         // TODO add your handling code here:
-
         String username = this.jListUsuarios.getSelectedValue();
-
-        if (!username.equals("")) {
+        if (!username.isBlank()) {
             try {
+                //request - response
                 if (SistemaSingleton.getInstance().getUsuarioBusiness().deleteUsuario(username)) {
                     JOptionPane.showMessageDialog(this, "Usuario eliminado", "Exito", JOptionPane.INFORMATION_MESSAGE);
                     this.jTextFieldNombreUsuarioEliminar.setText("");
-                    limpiarListaUsuarios();
-                    this.jButtonEliminarUsuario.setEnabled(false);
+                    synchronized (this) {
+                        this.flag_actualizarLista = true;
+                        notifyAll();
+                    }
+
                 } else {
                     JOptionPane.showMessageDialog(this, "Error al eliminar el usuario", "Error", JOptionPane.ERROR_MESSAGE);
                 }
+
             } catch (IOException ex) {
                 Logger.getLogger(JIFAdministrador.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -344,70 +355,70 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
     private void jButtonBuscarEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarEliminarActionPerformed
         // TODO add your handling code here:
         String username = this.jTextFieldNombreUsuarioEliminar.getText().toLowerCase();
-        if (username.equals("")) {
-            actualizarListaUsuario();
-            this.jListUsuarios.setEnabled(true);
-        } else {
+        String message = "";
+        if (!username.isBlank()) {
+            //request - response
             if (SistemaSingleton.getInstance().getUsuarioBusiness().exists(username)) {
-                this.jButtonEliminarUsuario.setEnabled(false);
                 if (username.equals(SistemaSingleton.getInstance().getUsuario().getUsername())) {
-                    username = "El usuario actual no puede ser borrado";
+                    message = "El usuario actual no puede ser borrado";
                     this.jListUsuarios.setEnabled(false);
                     this.jButtonEliminarUsuario.setEnabled(false);
-                }
-                final String s = username;
-                username = this.jTextFieldNombreUsuarioEliminar.getText();
-                if (!username.equals(SistemaSingleton.getInstance().getUsuario().getUsername())
-                        || username.equals("")) {
+                } else {
+                    message = username;
                     this.jListUsuarios.setEnabled(true);
                 }
-                this.jListUsuarios.setModel(new javax.swing.AbstractListModel<String>() {
-
-                    String[] strings = new String[]{s};
-
-                    public int getSize() {
-                        return strings.length;
-                    }
-
-                    public String getElementAt(int i) {
-                        return strings[i];
-                    }
-
-                });
             } else {
+                message = "Usuario no encontrado";
                 this.jListUsuarios.setEnabled(false);
                 this.jButtonEliminarUsuario.setEnabled(false);
-
-                this.jListUsuarios.setModel(new javax.swing.AbstractListModel<String>() {
-                    String[] strings = new String[]{"Usuario no encontrado"};
-
-                    public int getSize() {
-                        return strings.length;
-                    }
-
-                    public String getElementAt(int i) {
-                        return strings[i];
-                    }
-                });
             }
+            final String s = message;
+            this.jListUsuarios.setModel(new javax.swing.AbstractListModel<String>() {
 
+                String[] strings = new String[]{s};
+
+                public int getSize() {
+                    return strings.length;
+                }
+
+                public String getElementAt(int i) {
+                    return strings[i];
+                }
+
+            });
+        } else {
+            synchronized (this) {
+                flag_actualizarLista = true;
+                notifyAll();
+            }
         }
-
-
     }//GEN-LAST:event_jButtonBuscarEliminarActionPerformed
+
+    private void formInternalFrameClosed(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosed
+        // TODO add your handling code here:
+        JFWindow.getInstance().jF_jMenuItemGestionUsuarios.setEnabled(true);
+        killThreads();
+    }//GEN-LAST:event_formInternalFrameClosed
+
+    private void jPanelEliminarUsuarioMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelEliminarUsuarioMousePressed
+        // TODO add your handling code here:
+        this.jListUsuarios.clearSelection();
+        if (this.jTextFieldNombreUsuarioEliminar.getText().isBlank()) {
+            synchronized (this) {
+                flag_actualizarLista = true;
+                notifyAll();
+            }
+        }
+    }//GEN-LAST:event_jPanelEliminarUsuarioMousePressed
 
     private void jListUsuariosValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListUsuariosValueChanged
         // TODO add your handling code here:
         if (this.jListUsuarios.getSelectedIndex() != -1) {
             this.jButtonEliminarUsuario.setEnabled(true);
+        } else {
+            this.jButtonEliminarUsuario.setEnabled(false);
         }
     }//GEN-LAST:event_jListUsuariosValueChanged
-
-    private void formInternalFrameClosed(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosed
-        // TODO add your handling code here:
-        JFWindow.getInstance().jMenuItemGestionUsuarios.setEnabled(true);
-    }//GEN-LAST:event_formInternalFrameClosed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel RegistrarUsuario;
@@ -426,43 +437,101 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTabbedPane jTabbedPane;
     private javax.swing.JTextField jTextFieldNombreUsuarioEliminar;
     private javax.swing.JTextField jTextFieldNombreUsuarioRegistrar;
     private javax.swing.JTextField jTextFieldPasswordRegistrar;
     // End of variables declaration//GEN-END:variables
 
-    private void actualizarListaUsuario() {
-        this.jButtonEliminarUsuario.setEnabled(false);
-        this.jListUsuarios.clearSelection();
-        this.jListUsuarios.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = cargarDatosUsuarios();
+    private void initThreads() {
+        this.datos = new String[0];
+        this.flag_actualizarLista = false;
+        this.flag_datosActualizados = true;
 
-            public int getSize() {
-                return strings.length;
-            }
+        this.hiloActualizarDatos_running = true;
+        this.hiloActualizarDatos = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (hiloActualizarDatos_running) {
+                    try {
+                        int n = 1000;
+                        Thread.sleep(n);
+                        actualizarDatos();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(JIFDigitador.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
-            public String getElementAt(int i) {
-                return strings[i];
-            }
-
-            private String[] cargarDatosUsuarios() {
-                List<String> usuarios = SistemaSingleton.getInstance().getUsuarioBusiness().loadNombresUsuarios();
-                usuarios.remove(SistemaSingleton.getInstance().getUsuario().getUsername());
-                String[] usuariosInfo = new String[usuarios.size()];
-                int j = 0;
-                for (String nombre : usuarios) {
-                    usuariosInfo[j] = nombre;
-                    j++;
                 }
-                return usuariosInfo;
-            }//cargarDatosUsuarios
-        });
-    }
+                System.out.println(hiloActualizarDatos.getName() + " killed");
+            }//run
+        }, "hiloActualizarDatos_JIFAdministrador");
+        this.hiloActualizarDatos.start();
 
-    private void limpiarListaUsuarios() {
+        this.hiloActualizarGUI_running = true;
+        this.hiloActualizarGUI = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (hiloActualizarDatos_running) {
+                    actualizarGUI();
+                }
+                System.out.println(hiloActualizarGUI.getName() + " killed");
+            }//run
+
+        }, "hiloActualizarGUI_JIFAdministrador");
+        this.hiloActualizarGUI.start();
+
+    }//initThreads
+
+    public synchronized void killThreads() {
+        this.hiloActualizarDatos_running = false;
+        this.hiloActualizarGUI_running = false;
+        this.flag_actualizarLista = true;
+        notifyAll();
+    }//killThreads
+
+    private synchronized void actualizarDatos() {
+        this.flag_datosActualizados = false;
+        //request - response
+        List<String> usuarios = SistemaSingleton.getInstance().getUsuarioBusiness().loadNombresUsuarios();
+        //formato
+        Usuario usuarioActual = SistemaSingleton.getInstance().getUsuario();
+        if (usuarioActual != null) {
+            usuarios.remove(usuarioActual.getUsername());
+            oldDatosCount = datos.length;
+            datos = new String[usuarios.size()];
+            int j = 0;
+            for (String nombre : usuarios) {
+                datos[j] = nombre;
+                j++;
+            }
+            this.flag_datosActualizados = true;
+            if (datos.length > oldDatosCount) {
+                this.flag_actualizarLista = true;
+                notifyAll();
+                System.out.println("datos nuevos");
+            }
+        }
+
+    }//actualizarDatos
+
+    private synchronized void actualizarGUI() {
+        if (!flag_actualizarLista || !flag_datosActualizados) {
+            try {
+                wait();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(JIFAdministrador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            actualizarLista();
+            this.flag_actualizarLista = false;
+        }
+    }//actualizarGUI
+
+    private void actualizarLista() {
+        this.jListUsuarios.setEnabled(true);
+        this.jButtonEliminarUsuario.setEnabled(false);
         this.jListUsuarios.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = new String[]{};
+            String[] strings = datos;
 
             public int getSize() {
                 return strings.length;
@@ -472,6 +541,6 @@ public class JIFAdministrador extends javax.swing.JInternalFrame {
                 return strings[i];
             }
         });
-        this.jListUsuarios.setEnabled(false);
-    }//limpiarListaUsuarios
-}
+    }//actualizarLista
+
+}//class
