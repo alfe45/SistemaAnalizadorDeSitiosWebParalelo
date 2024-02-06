@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
@@ -91,6 +93,7 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         jLabelContenido1 = new javax.swing.JLabel();
         jButtonAgregarDestinatario = new javax.swing.JButton();
         jTextFieldDestinatario = new javax.swing.JTextField();
+        jButtonEliminarDestinatario = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTextAreaCorreosEnviados = new javax.swing.JTextArea();
 
@@ -387,13 +390,18 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jPanel3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jPanel3MousePressed(evt);
+            }
+        });
 
         jTextAreaContenido.setColumns(20);
         jTextAreaContenido.setRows(5);
         jScrollPane2.setViewportView(jTextAreaContenido);
 
         jLabelNombreArchivo.setForeground(new java.awt.Color(0, 0, 0));
-        jLabelNombreArchivo.setText("NombreArchivo");
+        jLabelNombreArchivo.setText("[Archvo no seleccionado]");
 
         jButtonSeleccionarArchivo.setText("Agregar Archivo");
         jButtonSeleccionarArchivo.addActionListener(new java.awt.event.ActionListener() {
@@ -410,7 +418,11 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         });
 
         jListDestinatarios.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jListDestinatarios.setEnabled(false);
+        jListDestinatarios.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jListDestinatariosValueChanged(evt);
+            }
+        });
         jScrollPane3.setViewportView(jListDestinatarios);
 
         jLabelAsunto.setForeground(new java.awt.Color(0, 0, 0));
@@ -426,6 +438,14 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         jButtonAgregarDestinatario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonAgregarDestinatarioActionPerformed(evt);
+            }
+        });
+
+        jButtonEliminarDestinatario.setText("-");
+        jButtonEliminarDestinatario.setEnabled(false);
+        jButtonEliminarDestinatario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEliminarDestinatarioActionPerformed(evt);
             }
         });
 
@@ -458,7 +478,9 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
                             .addComponent(jTextFieldAsunto))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonAgregarDestinatario)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButtonAgregarDestinatario)
+                    .addComponent(jButtonEliminarDestinatario, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -470,7 +492,11 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                     .addComponent(jTextFieldDestinatario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonAgregarDestinatario))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jButtonEliminarDestinatario)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
@@ -490,6 +516,7 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
+        jTextAreaCorreosEnviados.setEditable(false);
         jTextAreaCorreosEnviados.setColumns(20);
         jTextAreaCorreosEnviados.setRows(5);
         jScrollPane4.setViewportView(jTextAreaCorreosEnviados);
@@ -673,6 +700,7 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                 jLabelNombreArchivo.setText(this.archivo.getName());
             } else {
                 JOptionPane.showMessageDialog(this, "Solo se pueden elegir archivos en formato PDF");
+                this.archivo = null;
             }
         }
 
@@ -689,14 +717,27 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                 for (int i = 0; i < this.jListDestinatarios.getModel().getSize(); i++) {
                     if (GestorCorreo.sendEmail(this.jListDestinatarios.getModel().getElementAt(i), this.jTextFieldAsunto.getText(), this.jTextAreaContenido.getText(), archivo)) {
                         System.out.println("Correo enviado  " + i);
+                        this.jTextAreaCorreosEnviados.append("Correo enviado a " + this.jListDestinatarios.getModel().getElementAt(i) + "\n");
                     } else {
-                        System.out.println("Correo no enviado  " + i);
+                        this.jTextAreaCorreosEnviados.append("Error al enviar a " + this.jListDestinatarios.getModel().getElementAt(i) + "\n");
                     }
                 }
                 this.jTextFieldAsunto.setText("");
                 this.jTextAreaContenido.setText("");
-                this.jLabelNombreArchivo.setText("");
+                this.jLabelNombreArchivo.setText("[Archvo no seleccionado]");
                 this.archivo = null;
+                jListDestinatarios.setModel(new javax.swing.AbstractListModel<String>() {
+                    String[] strings = new String[0];
+
+                    public int getSize() {
+                        return strings.length;
+                    }
+
+                    public String getElementAt(int i) {
+                        return strings[i];
+                    }
+                });
+                this.jButtonEliminarDestinatario.setEnabled(false);
             }
         } else {
             JOptionPane.showMessageDialog(this, "Seleccione un archivo", "Advertencia", JOptionPane.WARNING_MESSAGE);
@@ -705,24 +746,31 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
 
     private void jButtonAgregarDestinatarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgregarDestinatarioActionPerformed
         // TODO add your handling code here:
-        String text = this.jTextFieldDestinatario.getText();
-        if (!text.isBlank()) {
-            if (text.contains("@")) {
-                String[] strings = new String[this.jListDestinatarios.getModel().getSize() + 1];
-                for (int i = 0; i < this.jListDestinatarios.getModel().getSize(); i++) {
-                    strings[i] = this.jListDestinatarios.getModel().getElementAt(i);
-                }
-                strings[this.jListDestinatarios.getModel().getSize()] = "last";
+        String email = this.jTextFieldDestinatario.getText();
+        if (!email.isBlank()) {
+            // Patrón para validar el email
+            Pattern pattern = Pattern.compile("([a-z0-9]+(\\.?[a-z0-9])*)+@(([a-z]+)\\.([a-z]+))+");
+
+            Matcher mather = pattern.matcher(email);
+
+            if (mather.find() == true) {
+                List<String> datos = new ArrayList<>();
                 boolean exists = false;
-                for (String string : strings) {
-                    if (string.equals(text)) {
+                for (int i = 0; i < this.jListDestinatarios.getModel().getSize(); i++) {
+                    if (this.jListDestinatarios.getModel().getElementAt(i).equals(email)) {
                         exists = true;
-                        break;
+                    } else {
+                        datos.add(this.jListDestinatarios.getModel().getElementAt(i));
                     }
                 }
-                if (!exists) {
-                    strings[this.jListDestinatarios.getModel().getSize()] = text;
+                datos.add(email);
+                if (exists) {
+                    JOptionPane.showMessageDialog(this, "Destinatario ya ingresado", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    this.jTextFieldDestinatario.setText("");
                 }
+
+                String[] strings = datos.toArray(new String[0]);
                 jListDestinatarios.setModel(new javax.swing.AbstractListModel<String>() {
 
                     public int getSize() {
@@ -733,14 +781,57 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                         return strings[i];
                     }
                 });
-                this.jTextFieldDestinatario.setText("");
+            } else {
+                JOptionPane.showMessageDialog(this, "Correo inválido", "Advertencia", JOptionPane.WARNING_MESSAGE);
             }
         }
     }//GEN-LAST:event_jButtonAgregarDestinatarioActionPerformed
 
+    private void jButtonEliminarDestinatarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarDestinatarioActionPerformed
+        // TODO add your handling code here:
+        String destinatarioSeleccionado = this.jListDestinatarios.getSelectedValue();
+        if (!destinatarioSeleccionado.isBlank()) {
+            String[] strings = new String[this.jListDestinatarios.getModel().getSize() - 1];
+            for (int i = 0; i < this.jListDestinatarios.getModel().getSize(); i++) {
+                if (!this.jListDestinatarios.getModel().getElementAt(i).equals(destinatarioSeleccionado)) {
+                    strings[i] = this.jListDestinatarios.getModel().getElementAt(i);
+                }
+            }
+
+            jListDestinatarios.setModel(new javax.swing.AbstractListModel<String>() {
+
+                public int getSize() {
+                    return strings.length;
+                }
+
+                public String getElementAt(int i) {
+                    return strings[i];
+                }
+            });
+        }
+
+
+    }//GEN-LAST:event_jButtonEliminarDestinatarioActionPerformed
+
+    private void jListDestinatariosValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListDestinatariosValueChanged
+        // TODO add your handling code here:
+        if (this.jListDestinatarios.getSelectedIndex() != -1) {
+            this.jButtonEliminarDestinatario.setEnabled(true);
+        } else {
+            this.jButtonEliminarDestinatario.setEnabled(false);
+        }
+    }//GEN-LAST:event_jListDestinatariosValueChanged
+
+    private void jPanel3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel3MousePressed
+        // TODO add your handling code here:
+        this.jButtonEliminarDestinatario.setEnabled(false);
+        this.jListDestinatarios.clearSelection();
+    }//GEN-LAST:event_jPanel3MousePressed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAbrirCarpeta;
     private javax.swing.JButton jButtonAgregarDestinatario;
+    private javax.swing.JButton jButtonEliminarDestinatario;
     private javax.swing.JButton jButtonEnviarCorreo;
     private javax.swing.JButton jButtonEnviarSolicitud;
     private javax.swing.JButton jButtonSeleccionarArchivo;
