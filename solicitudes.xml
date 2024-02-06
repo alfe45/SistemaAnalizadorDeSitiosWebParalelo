@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<solicitud />
+<solicitudes><solicitud estado="pendiente" url="https://www.last.fm/es/user/Al_fe_45"><digitador username="noAsignado" /><gestor username="noAsignado" /><analista username="noAsignado" /><analisis_elementos hacer="true" /><analisis_extraccion hacer="false" analisis_extraccion_img="false" analisis_extraccion_links="false" /><analisis_comparacion hacer="false" /><resultado><analisis_elementos><subtitles cantidad="22" /></analisis_elementos></resultado></solicitud></solicitudes>

@@ -25,7 +25,7 @@ public class AnalizadorURL {
         this.analisis = new ArrayList<>();
     }
     
-    public boolean crearAnalisisSolicitud(Solicitud solicitud, int subprocesos, int esclavos) throws IOException, NoSuchAlgorithmException, KeyManagementException {
+    public boolean analizarSolicitud(Solicitud solicitud, int subprocesos, int esclavos) throws IOException, NoSuchAlgorithmException, KeyManagementException {
         if (subprocesos >= 1 && esclavos >= 1) {
             Analisis analisis = new Analisis(solicitud, subprocesos, esclavos);
             this.analisis.add(analisis);

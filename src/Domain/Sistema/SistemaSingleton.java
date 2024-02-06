@@ -138,8 +138,8 @@ public class SistemaSingleton {
 
     public boolean asignarSolicitud(Solicitud solicitud, String analistaUsername) {
         if (!analistaUsername.isBlank()) {
-            solicitud.setAnalista(analistaUsername);
-            solicitud.setGestor(this.usuario.getUsername());
+            solicitud.data_setAnalista(analistaUsername);
+            solicitud.data_setGestor(this.usuario.getUsername());
             try {
                 return this.solicitudBusiness.overrideSolicitud(solicitud);
             } catch (IOException ex) {
@@ -162,10 +162,10 @@ public class SistemaSingleton {
         return false;
     }//agregarResultado;
 
-    public boolean crearAnalisisSolicitud(Solicitud solicitudSeleccionada, int subprocesos, int esclavos) {
+    public boolean analizarSolicitud(Solicitud solicitudSeleccionada, int subprocesos, int esclavos) {
         if (this.analizadorURL != null) {
             try {
-                return this.analizadorURL.crearAnalisisSolicitud(solicitudSeleccionada, subprocesos, esclavos);
+                return this.analizadorURL.analizarSolicitud(solicitudSeleccionada, subprocesos, esclavos);
             } catch (IOException ex) {
                 Logger.getLogger(SistemaSingleton.class.getName()).log(Level.SEVERE, null, ex);
             } catch (NoSuchAlgorithmException ex) {
@@ -176,5 +176,9 @@ public class SistemaSingleton {
         }
         return false;
     }//crearAnalisisSolicitud
+
+    public void agregarSolicitud2(Solicitud solicitud, boolean enlaces, boolean imagenes) {
+
+    }
 
 }//class

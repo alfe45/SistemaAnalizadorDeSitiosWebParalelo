@@ -52,9 +52,8 @@ public class SolicitudData {
         if (exists(solicitud)) {
             List<Element> eSolicitudes = this.root.getChildren();
             for (Element eSolicitud : eSolicitudes) {
-                if (eSolicitud.getAttributeValue(Utility.URL).equals(solicitud.getUrl())) {
+                if (eSolicitud.getAttributeValue(Utility.URL).equals(solicitud.data_getUrl())) {
                     this.root.removeContent(eSolicitud);
-                    System.out.println("eliminada");
                     break;
                 }
             }
@@ -70,32 +69,14 @@ public class SolicitudData {
         List<Element> eSolicitudes = this.root.getChildren();
         if (rol.equals(Utility.GESTOR)) {
             for (Element eSolicitud : eSolicitudes) {
-                Solicitud temp = new Solicitud(
-                        eSolicitud.getAttributeValue(Utility.ESTADO),
-                        eSolicitud.getAttributeValue(Utility.URL),
-                        eSolicitud.getChild(Utility.DIGITADOR).getAttributeValue(Utility.USERNAME),
-                        eSolicitud.getChild(Utility.GESTOR).getAttributeValue(Utility.USERNAME),
-                        eSolicitud.getChild(Utility.ANALISTA).getAttributeValue(Utility.USERNAME),
-                        Boolean.parseBoolean(eSolicitud.getChild(Utility.ANALISIS1).getAttributeValue(Utility.HACER)),
-                        Boolean.parseBoolean(eSolicitud.getChild(Utility.ANALISIS2).getAttributeValue(Utility.HACER)),
-                        Boolean.parseBoolean(eSolicitud.getChild(Utility.ANALISIS3).getAttributeValue(Utility.HACER)),
-                        eSolicitud.getChild(Utility.RESULTADO));
+                Solicitud temp = new Solicitud(eSolicitud);
                 solicitudes.add(temp);
             }
             return solicitudes;
         } else {
             for (Element eSolicitud : eSolicitudes) {
                 if (eSolicitud.getChild(rol).getAttributeValue(Utility.USERNAME).equals(username)) {
-                    Solicitud temp = new Solicitud(
-                            eSolicitud.getAttributeValue(Utility.ESTADO),
-                            eSolicitud.getAttributeValue(Utility.URL),
-                            eSolicitud.getChild(Utility.DIGITADOR).getAttributeValue(Utility.USERNAME),
-                            eSolicitud.getChild(Utility.GESTOR).getAttributeValue(Utility.USERNAME),
-                            eSolicitud.getChild(Utility.ANALISTA).getAttributeValue(Utility.USERNAME),
-                            Boolean.parseBoolean(eSolicitud.getChild(Utility.ANALISIS1).getAttributeValue(Utility.HACER)),
-                            Boolean.parseBoolean(eSolicitud.getChild(Utility.ANALISIS2).getAttributeValue(Utility.HACER)),
-                            Boolean.parseBoolean(eSolicitud.getChild(Utility.ANALISIS3).getAttributeValue(Utility.HACER)),
-                            eSolicitud.getChild(Utility.RESULTADO));
+                    Solicitud temp = new Solicitud(eSolicitud);
                     solicitudes.add(temp);
                 }
             }
@@ -104,35 +85,7 @@ public class SolicitudData {
     }//loadSolicitudes
 
     private boolean saveSolicitud(Solicitud solicitud) throws IOException {
-        Element eSolicitud = new Element(Utility.SOLICITUD);
-        eSolicitud.setAttribute(Utility.ESTADO, solicitud.getEstado());
-        eSolicitud.setAttribute(Utility.URL, solicitud.getUrl());
-
-        Element eDigitador = new Element(Utility.DIGITADOR);
-        eDigitador.setAttribute(Utility.USERNAME, solicitud.getDigitador());
-        eSolicitud.addContent(eDigitador);
-
-        Element eGestor = new Element(Utility.GESTOR);
-        eGestor.setAttribute(Utility.USERNAME, solicitud.getGestor());
-        eSolicitud.addContent(eGestor);
-
-        Element eAnalista = new Element(Utility.ANALISTA);
-        eAnalista.setAttribute(Utility.USERNAME, solicitud.getAnalista());
-        eSolicitud.addContent(eAnalista);
-
-        Element eAnalisis1 = new Element(Utility.ANALISIS1);
-        eAnalisis1.setAttribute(Utility.HACER, solicitud.doAnalisis1() + "");
-        eSolicitud.addContent(eAnalisis1);
-
-        Element eAnalisis2 = new Element(Utility.ANALISIS2);
-        eAnalisis2.setAttribute(Utility.HACER, solicitud.doAnalisis2() + "");
-        eSolicitud.addContent(eAnalisis2);
-
-        Element eAnalisis3 = new Element(Utility.ANALISIS3);
-        eAnalisis3.setAttribute(Utility.HACER, solicitud.doAnalisis3() + "");
-        eSolicitud.addContent(eAnalisis3);
-
-        this.root.addContent(eSolicitud);
+        this.root.addContent(solicitud.getData());
         saveXML();
         return true;
     }//saveSolicitud
@@ -141,7 +94,7 @@ public class SolicitudData {
         List<Solicitud> solicitudes = new ArrayList<>();
         List<Element> eSolicitudes = this.root.getChildren();
         for (Element eSolicitud : eSolicitudes) {
-            if (eSolicitud.getAttributeValue(Utility.URL).equals(solicitud.getUrl())) {
+            if (eSolicitud.getAttributeValue(Utility.URL).equals(solicitud.data_getUrl())) {
                 return true;
             }
         }
@@ -152,7 +105,7 @@ public class SolicitudData {
         List<Solicitud> solicitudes = new ArrayList<>();
         List<Element> eSolicitudes = this.root.getChildren();
         for (Element eSolicitud : eSolicitudes) {
-            if (eSolicitud.getAttributeValue(Utility.URL).equals(solicitud.getUrl())) {
+            if (eSolicitud.getAttributeValue(Utility.URL).equals(solicitud.data_getUrl())) {
                 eSolicitud.removeChild(Utility.RESULTADO);
                 eSolicitud.addContent(resultado);
                 saveXML();

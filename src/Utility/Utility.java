@@ -43,6 +43,8 @@ public class Utility {
     public static final String HACER = "hacer";
     public static final String ANALISIS1 = "analisis_elementos";
     public static final String ANALISIS2 = "analisis_extraccion";
+    public static final String ANALISIS2_IMG = "analisis_extraccion_img";
+    public static final String ANALISIS2_LINKS = "analisis_extraccion_links";
     public static final String ANALISIS3 = "analisis_comparacion";
 
     public static final String ESTADO = "estado";
@@ -54,7 +56,7 @@ public class Utility {
     public static final String GRAFICO_PASTEL = "pastel";
 
     public static final String SOLICITUD = "solicitud";
-    public static final String SOLICITUDES = "solicitud";
+    public static final String SOLICITUDES = "solicitudes";
     public static final String URL = "url";
 
     public static final String DIGITADOR = "digitador";

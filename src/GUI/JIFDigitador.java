@@ -38,6 +38,8 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         this.setLocation((jfSize.width - jifSize.width) / 2, (((jfSize.height - JFWindow.getInstance().jF_jMenuBar.getHeight()) - jifSize.height) / 2));
         this.show();
         this.jLabelActualizando.setText("");
+        this.jCheckBoxEnlaces.setVisible(false);
+        this.jCheckBoxImagenes.setVisible(false);
         initThreads();
     }
 
@@ -59,6 +61,8 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         jCheckBox3 = new javax.swing.JCheckBox();
         jButtonEnviarSolicitud = new javax.swing.JButton();
         jLabelURL = new javax.swing.JLabel();
+        jCheckBoxEnlaces = new javax.swing.JCheckBox();
+        jCheckBoxImagenes = new javax.swing.JCheckBox();
         jPanelMisSolicitudes = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jListSolicitudes = new javax.swing.JList<>();
@@ -72,11 +76,17 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         jCheckBox6 = new javax.swing.JCheckBox();
         jLabelEstado_Analista = new javax.swing.JLabel();
         jLabelEstado_Digitador = new javax.swing.JLabel();
-        jTextFieldEstado_Analista = new javax.swing.JTextField();
-        jTextFieldEstado_Digitador = new javax.swing.JTextField();
+        jTextFieldAnalista = new javax.swing.JTextField();
+        jTextFieldDigitador = new javax.swing.JTextField();
         jButtonVerGrafico = new javax.swing.JButton();
         jButtonAbrirCarpeta = new javax.swing.JButton();
         jButtonVerDatos = new javax.swing.JButton();
+        jCheckBoxImagenesMostrar = new javax.swing.JCheckBox();
+        jCheckBoxEnlacesMostrar = new javax.swing.JCheckBox();
+        jSeparator2 = new javax.swing.JSeparator();
+        jSeparator3 = new javax.swing.JSeparator();
+        jLabelEstado_Digitador1 = new javax.swing.JLabel();
+        jTextFieldGestor = new javax.swing.JTextField();
         jLabelActualizando = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
@@ -156,6 +166,12 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         jLabelURL.setForeground(new java.awt.Color(0, 0, 0));
         jLabelURL.setText("URL:");
 
+        jCheckBoxEnlaces.setForeground(new java.awt.Color(0, 0, 0));
+        jCheckBoxEnlaces.setText("Enlaces");
+
+        jCheckBoxImagenes.setForeground(new java.awt.Color(0, 0, 0));
+        jCheckBoxImagenes.setText("Imágenes");
+
         javax.swing.GroupLayout jPanelCrearSolicitudLayout = new javax.swing.GroupLayout(jPanelCrearSolicitud);
         jPanelCrearSolicitud.setLayout(jPanelCrearSolicitudLayout);
         jPanelCrearSolicitudLayout.setHorizontalGroup(
@@ -168,12 +184,17 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                         .addComponent(jButtonEnviarSolicitud))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCrearSolicitudLayout.createSequentialGroup()
                         .addComponent(jLabelURL)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 205, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
                         .addGroup(jPanelCrearSolicitudLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jCheckBox1)
                             .addComponent(jCheckBox2)
                             .addComponent(jCheckBox3)
-                            .addComponent(jTextFieldURL, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(jPanelCrearSolicitudLayout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addGroup(jPanelCrearSolicitudLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jCheckBoxImagenes)
+                                    .addComponent(jCheckBoxEnlaces)))
+                            .addComponent(jTextFieldURL, javax.swing.GroupLayout.PREFERRED_SIZE, 486, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         jPanelCrearSolicitudLayout.setVerticalGroup(
@@ -183,13 +204,17 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                 .addGroup(jPanelCrearSolicitudLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabelURL))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBox1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBox2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jCheckBoxEnlaces)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jCheckBoxImagenes)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBox3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 295, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 222, Short.MAX_VALUE)
                 .addComponent(jButtonEnviarSolicitud)
                 .addContainerGap())
         );
@@ -251,14 +276,14 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         jLabelEstado_Digitador.setForeground(new java.awt.Color(0, 0, 0));
         jLabelEstado_Digitador.setText("Digitador:");
 
-        jTextFieldEstado_Analista.setEditable(false);
-        jTextFieldEstado_Analista.setEnabled(false);
+        jTextFieldAnalista.setEditable(false);
+        jTextFieldAnalista.setEnabled(false);
 
-        jTextFieldEstado_Digitador.setEditable(false);
-        jTextFieldEstado_Digitador.setEnabled(false);
-        jTextFieldEstado_Digitador.addActionListener(new java.awt.event.ActionListener() {
+        jTextFieldDigitador.setEditable(false);
+        jTextFieldDigitador.setEnabled(false);
+        jTextFieldDigitador.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldEstado_DigitadorActionPerformed(evt);
+                jTextFieldDigitadorActionPerformed(evt);
             }
         });
 
@@ -286,39 +311,73 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
             }
         });
 
+        jCheckBoxImagenesMostrar.setForeground(new java.awt.Color(0, 0, 0));
+        jCheckBoxImagenesMostrar.setText("Imágenes");
+        jCheckBoxImagenesMostrar.setEnabled(false);
+
+        jCheckBoxEnlacesMostrar.setForeground(new java.awt.Color(0, 0, 0));
+        jCheckBoxEnlacesMostrar.setText("Enlaces");
+        jCheckBoxEnlacesMostrar.setEnabled(false);
+
+        jLabelEstado_Digitador1.setForeground(new java.awt.Color(0, 0, 0));
+        jLabelEstado_Digitador1.setText("Gestor:");
+
+        jTextFieldGestor.setEditable(false);
+        jTextFieldGestor.setEnabled(false);
+        jTextFieldGestor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldGestorActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator3)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelEstado_Estado)
-                            .addComponent(jLabelEstado_URL))
-                        .addGap(32, 32, 32)
-                        .addComponent(jTextFieldEstado_URL, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelEstado_Analista)
-                            .addComponent(jLabelEstado_Digitador))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldEstado_Digitador, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jTextFieldEstado_Estado, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jTextFieldEstado_Analista, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBox6)
-                            .addComponent(jCheckBox5)
-                            .addComponent(jCheckBox4))
+                        .addComponent(jCheckBox4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButtonVerDatos, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButtonAbrirCarpeta, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButtonVerGrafico, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(jButtonVerGrafico, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jSeparator2)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jCheckBox5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jCheckBoxImagenesMostrar)
+                        .addGap(18, 18, 18)
+                        .addComponent(jCheckBoxEnlacesMostrar)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButtonAbrirCarpeta))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jCheckBox6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonVerDatos, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabelEstado_Estado)
+                                    .addComponent(jLabelEstado_URL))
+                                .addGap(32, 32, 32)
+                                .addComponent(jTextFieldEstado_URL, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabelEstado_Analista)
+                                .addGap(25, 25, 25)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jTextFieldEstado_Estado, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextFieldAnalista, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabelEstado_Digitador)
+                                    .addComponent(jLabelEstado_Digitador1))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jTextFieldGestor, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextFieldDigitador, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 13, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -329,31 +388,35 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                     .addComponent(jLabelEstado_URL)
                     .addComponent(jTextFieldEstado_URL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabelEstado_Estado)
-                            .addComponent(jTextFieldEstado_Estado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jCheckBox4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabelEstado_Analista)
-                            .addComponent(jTextFieldEstado_Analista, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jCheckBox5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabelEstado_Digitador)
-                            .addComponent(jTextFieldEstado_Digitador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButtonVerGrafico)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addGap(29, 29, 29)
-                                .addComponent(jButtonAbrirCarpeta)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButtonVerDatos)
-                            .addComponent(jCheckBox6))))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelEstado_Estado)
+                    .addComponent(jTextFieldEstado_Estado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelEstado_Digitador)
+                    .addComponent(jTextFieldDigitador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelEstado_Analista)
+                    .addComponent(jTextFieldAnalista, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelEstado_Digitador1)
+                    .addComponent(jTextFieldGestor, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonVerGrafico)
+                    .addComponent(jCheckBox4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jCheckBox5)
+                    .addComponent(jButtonAbrirCarpeta)
+                    .addComponent(jCheckBoxImagenesMostrar)
+                    .addComponent(jCheckBoxEnlacesMostrar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jCheckBox6, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonVerDatos))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -380,10 +443,10 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabelActualizando)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Mis solicitudes", jPanelMisSolicitudes);
@@ -475,7 +538,7 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                         .addGap(37, 37, 37)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextFieldDestinatario)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
                             .addComponent(jTextFieldAsunto))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -493,7 +556,7 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                     .addComponent(jButtonAgregarDestinatario))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jButtonEliminarDestinatario)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -557,8 +620,8 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
-                .addContainerGap())
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -577,6 +640,16 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
 
     private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
         // TODO add your handling code here:
+        if (!this.jCheckBoxEnlaces.isVisible()) {
+            this.jCheckBoxEnlaces.setVisible(true);
+        } else {
+            this.jCheckBoxEnlaces.setVisible(false);
+        }
+        if (!this.jCheckBoxImagenes.isVisible()) {
+            this.jCheckBoxImagenes.setVisible(true);
+        } else {
+            this.jCheckBoxImagenes.setVisible(false);
+        }
     }//GEN-LAST:event_jCheckBox2ActionPerformed
 
     private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox3ActionPerformed
@@ -588,27 +661,38 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         if (this.jTextFieldURL.getText().isBlank()) {
             JOptionPane.showMessageDialog(this, "La url está vacía", "Advertencia", JOptionPane.WARNING_MESSAGE);
         } else {
-            Solicitud solicitud = new Solicitud(
-                    this.jTextFieldURL.getText(),
-                    this.jCheckBox1.isSelected(),
-                    this.jCheckBox2.isSelected(),
-                    this.jCheckBox3.isSelected());
-            if (solicitud.esValida()) {
-                if (SistemaSingleton.getInstance().urlValida(solicitud.getUrl())) {
-                    if (SistemaSingleton.getInstance().agregarSolicitud(solicitud)) {
-                        JOptionPane.showMessageDialog(this, "Solicitud enviada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                        this.jTextFieldURL.setText("");
-                        this.jCheckBox1.setSelected(false);
-                        this.jCheckBox2.setSelected(false);
-                        this.jCheckBox3.setSelected(false);
+            if (this.jCheckBoxEnlaces.isSelected() || this.jCheckBoxImagenes.isSelected()) {
+                Solicitud solicitud = new Solicitud(
+                        this.jTextFieldURL.getText(),
+                        this.jCheckBox1.isSelected(),
+                        this.jCheckBox2.isSelected(),
+                        this.jCheckBoxImagenes.isSelected(),
+                        this.jCheckBoxEnlaces.isSelected(),
+                        this.jCheckBox3.isSelected());
+                solicitud.data_setDigitador(SistemaSingleton.getInstance().getUsuario().getUsername());
+                if (solicitud.esValida()) {
+                    if (SistemaSingleton.getInstance().urlValida(solicitud.data_getUrl())) {
+                        if (SistemaSingleton.getInstance().agregarSolicitud(solicitud)) {
+                            JOptionPane.showMessageDialog(this, "Solicitud enviada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                            this.jTextFieldURL.setText("");
+                            this.jCheckBox1.setSelected(false);
+                            this.jCheckBox2.setSelected(false);
+                            this.jCheckBox3.setSelected(false);
+                            this.jCheckBoxImagenes.setSelected(false);
+                            this.jCheckBoxEnlaces.setSelected(false);
+                            this.jCheckBoxImagenes.setVisible(false);
+                            this.jCheckBoxEnlaces.setVisible(false);
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Solicitud no enviada", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
                     } else {
-                        JOptionPane.showMessageDialog(this, "Solicitud no enviada", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Url inválida", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
-                    JOptionPane.showMessageDialog(this, "Url inválida", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Selecione al menos un tipo de análisis", "Advertencia", JOptionPane.WARNING_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Selecione al menos un tipo de análisis", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Seleccione al menos un tipo de elemento a extraer", "Advertencia", JOptionPane.WARNING_MESSAGE);
             }
 
         }
@@ -642,15 +726,18 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         if (!this.jListSolicitudes.isSelectionEmpty()) {
             String listText = this.jListSolicitudes.getSelectedValue();
             for (Solicitud solicitud : datos) {
-                if (solicitud.getUrl().equals(listText)) {
-                    this.jTextFieldEstado_URL.setText(solicitud.getUrl());
-                    this.jTextFieldEstado_Estado.setText(solicitud.getEstado());
-                    this.jTextFieldEstado_Analista.setText(solicitud.getAnalista());
-                    this.jTextFieldEstado_Digitador.setText(solicitud.getDigitador());
+                if (solicitud.data_getUrl().equals(listText)) {
+                    this.jTextFieldEstado_URL.setText(solicitud.data_getUrl());
+                    this.jTextFieldEstado_Estado.setText(solicitud.data_getEstado());
+                    this.jTextFieldAnalista.setText(solicitud.data_getAnalista());
+                    this.jTextFieldDigitador.setText(solicitud.data_getDigitador());
+                    this.jTextFieldGestor.setText(solicitud.data_getGestor());
                     this.jCheckBox4.setSelected(solicitud.doAnalisis1());
                     this.jCheckBox5.setSelected(solicitud.doAnalisis2());
                     this.jCheckBox6.setSelected(solicitud.doAnalisis3());
-                    if (solicitud.getEstado().equals(Utility.Utility.ESTADO_FINALIZADO)) {
+                    this.jCheckBoxEnlacesMostrar.setSelected(solicitud.doAnalisis2_extract_links());
+                    this.jCheckBoxImagenesMostrar.setSelected(solicitud.doAnalisis2_extract_img());
+                    if (solicitud.data_getEstado().equals(Utility.Utility.ESTADO_FINALIZADO)) {
                         this.jButtonVerGrafico.setEnabled(true);
                         this.jButtonAbrirCarpeta.setEnabled(true);
                         this.jButtonVerDatos.setEnabled(true);
@@ -672,9 +759,9 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonVerDatosActionPerformed
 
-    private void jTextFieldEstado_DigitadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldEstado_DigitadorActionPerformed
+    private void jTextFieldDigitadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDigitadorActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldEstado_DigitadorActionPerformed
+    }//GEN-LAST:event_jTextFieldDigitadorActionPerformed
 
     private void jButtonSeleccionarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSeleccionarArchivoActionPerformed
         // TODO add your handling code here:
@@ -828,6 +915,10 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         this.jListDestinatarios.clearSelection();
     }//GEN-LAST:event_jPanel3MousePressed
 
+    private void jTextFieldGestorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldGestorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldGestorActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAbrirCarpeta;
     private javax.swing.JButton jButtonAgregarDestinatario;
@@ -843,12 +934,17 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
     private javax.swing.JCheckBox jCheckBox4;
     private javax.swing.JCheckBox jCheckBox5;
     private javax.swing.JCheckBox jCheckBox6;
+    private javax.swing.JCheckBox jCheckBoxEnlaces;
+    private javax.swing.JCheckBox jCheckBoxEnlacesMostrar;
+    private javax.swing.JCheckBox jCheckBoxImagenes;
+    private javax.swing.JCheckBox jCheckBoxImagenesMostrar;
     private javax.swing.JLabel jLabelActualizando;
     private javax.swing.JLabel jLabelAsunto;
     private javax.swing.JLabel jLabelContenido1;
     private javax.swing.JLabel jLabelDestinatario;
     private javax.swing.JLabel jLabelEstado_Analista;
     private javax.swing.JLabel jLabelEstado_Digitador;
+    private javax.swing.JLabel jLabelEstado_Digitador1;
     private javax.swing.JLabel jLabelEstado_Estado;
     private javax.swing.JLabel jLabelEstado_URL;
     private javax.swing.JLabel jLabelNombreArchivo;
@@ -865,15 +961,18 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextArea jTextAreaContenido;
     private javax.swing.JTextArea jTextAreaCorreosEnviados;
+    private javax.swing.JTextField jTextFieldAnalista;
     private javax.swing.JTextField jTextFieldAsunto;
     private javax.swing.JTextField jTextFieldDestinatario;
-    private javax.swing.JTextField jTextFieldEstado_Analista;
-    private javax.swing.JTextField jTextFieldEstado_Digitador;
+    private javax.swing.JTextField jTextFieldDigitador;
     private javax.swing.JTextField jTextFieldEstado_Estado;
     private javax.swing.JTextField jTextFieldEstado_URL;
+    private javax.swing.JTextField jTextFieldGestor;
     private javax.swing.JTextField jTextFieldURL;
     // End of variables declaration//GEN-END:variables
 
@@ -927,6 +1026,7 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         this.flag_datosActualizados = false;
         if (SistemaSingleton.getInstance().getUsuario() != null) {
             oldDatosCount = datos.size();
+            //request - response
             this.datos = SistemaSingleton.getInstance().misDatos(SistemaSingleton.getInstance().getUsuario().getUsername());
             if (datos.size() > oldDatosCount) {
                 this.flag_datosActualizados = true;
@@ -967,7 +1067,7 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
     private void actualizarLista() {
         String[] datosLista = new String[this.datos.size()];
         for (Solicitud solicitud : this.datos) {
-            datosLista[datos.indexOf(solicitud)] = solicitud.getUrl();
+            datosLista[datos.indexOf(solicitud)] = solicitud.data_getUrl();
         }
         jListSolicitudes.setModel(new javax.swing.AbstractListModel<String>() {
             public int getSize() {

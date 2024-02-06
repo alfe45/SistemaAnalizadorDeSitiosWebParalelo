@@ -22,19 +22,19 @@ import org.jdom.Element;
 public class TestGrafico {
     
     public static void main(String[] args) {
-        try {
-            Element doc=Analisis.analisisDeElementos(new Solicitud("https://es.wikipedia.org/wiki/Marte_(planeta)", true, true, true));
-            
-            Document document=new Document(doc);
-            Grafico g=new Grafico(document, "j");
-            
-        } catch (IOException ex) {
-            Logger.getLogger(TestGrafico.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(TestGrafico.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (KeyManagementException ex) {
-            Logger.getLogger(TestGrafico.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            Element doc=Analisis.analisisDeElementos(new Solicitud("https://es.wikipedia.org/wiki/Marte_(planeta)", true, true, true));
+//            
+//            Document document=new Document(doc);
+//            Grafico g=new Grafico(document, "j");
+//            
+//        } catch (IOException ex) {
+//            Logger.getLogger(TestGrafico.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (NoSuchAlgorithmException ex) {
+//            Logger.getLogger(TestGrafico.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (KeyManagementException ex) {
+//            Logger.getLogger(TestGrafico.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
     
 }

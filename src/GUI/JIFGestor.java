@@ -275,7 +275,7 @@ public class JIFGestor extends javax.swing.JInternalFrame {
     private void jListSolicitudesAsignadasValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListSolicitudesAsignadasValueChanged
         // TODO add your handling code here:
         actualizarSolicitudesSeleccionadas();
-        this.jTextFieldEstado1.setText(this.solicitudSeleccionadaListaAsignadas.getEstado());
+        this.jTextFieldEstado1.setText(this.solicitudSeleccionadaListaAsignadas.data_getEstado());
 
     }//GEN-LAST:event_jListSolicitudesAsignadasValueChanged
 
@@ -435,8 +435,8 @@ public class JIFGestor extends javax.swing.JInternalFrame {
         List<String> temp = new ArrayList<>();
         
         for (Solicitud solicitud : this.datosSolicitudes) {
-            if (solicitud.getAnalista().equals(Utility.NO_ASIGNADO)) {
-                temp.add(solicitud.getUrl());
+            if (solicitud.data_getAnalista().equals(Utility.NO_ASIGNADO)) {
+                temp.add(solicitud.data_getUrl());
             }
         }
         String[] strings = temp.toArray(new String[0]);
@@ -452,9 +452,9 @@ public class JIFGestor extends javax.swing.JInternalFrame {
         temp.clear();
 
         for (Solicitud solicitud : this.datosSolicitudes) {
-            if (solicitud.getAnalista().equals(this.jComboBox1.getSelectedItem().toString())
-                    && solicitud.getGestor().equals(SistemaSingleton.getInstance().getUsuario().getUsername())) {
-                temp.add(solicitud.getUrl());
+            if (solicitud.data_getAnalista().equals(this.jComboBox1.getSelectedItem().toString())
+                    && solicitud.data_getGestor().equals(SistemaSingleton.getInstance().getUsuario().getUsername())) {
+                temp.add(solicitud.data_getUrl());
             }
         }
         String[] strings2 = temp.toArray(new String[0]);
@@ -479,10 +479,10 @@ public class JIFGestor extends javax.swing.JInternalFrame {
 
     private void actualizarSolicitudesSeleccionadas() {
         for (Solicitud solicitud : datosSolicitudes) {
-            if (solicitud.getUrl().equals(this.jListSolicitudesNoAsignadas.getSelectedValue())) {
+            if (solicitud.data_getUrl().equals(this.jListSolicitudesNoAsignadas.getSelectedValue())) {
                 this.solicitudSeleccionadaListaNoAsignadas = solicitud;
             }
-            if (solicitud.getUrl().equals(this.jListSolicitudesAsignadas.getSelectedValue())) {
+            if (solicitud.data_getUrl().equals(this.jListSolicitudesAsignadas.getSelectedValue())) {
                 this.solicitudSeleccionadaListaAsignadas = solicitud;
             }
         }

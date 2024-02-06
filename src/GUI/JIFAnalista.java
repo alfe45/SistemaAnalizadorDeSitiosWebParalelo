@@ -183,11 +183,11 @@ public class JIFAnalista extends javax.swing.JInternalFrame {
         //Aqui se hace el analisis de la solicitud selecionada
         //request - response
         if (this.solicitudSeleccionada != null) {
-            if (SistemaSingleton.getInstance().crearAnalisisSolicitud(this.solicitudSeleccionada,
+            if (SistemaSingleton.getInstance().analizarSolicitud(this.solicitudSeleccionada,
                     (int) this.jSpinnerSubprocesos.getValue(),
                     (int) this.jSpinnerEsclavos.getValue())) {
                 System.out.println("solicitud en analisis");
-            this.datosSolicitudes.remove(solicitudSeleccionada);
+                this.datosSolicitudes.remove(solicitudSeleccionada);
                 synchronized (this) {
                     this.flag_actualizar = true;
                     this.flag_datosSolicitudesActualizados = true;
@@ -336,7 +336,7 @@ public class JIFAnalista extends javax.swing.JInternalFrame {
     private void actualizarLista() {
         String[] datosLista = new String[this.datosSolicitudes.size()];
         for (Solicitud solicitud : this.datosSolicitudes) {
-            datosLista[datosSolicitudes.indexOf(solicitud)] = solicitud.getUrl();
+            datosLista[datosSolicitudes.indexOf(solicitud)] = solicitud.data_getUrl();
         }
         jListSolicitudes.setModel(new javax.swing.AbstractListModel<String>() {
             public int getSize() {
@@ -351,7 +351,7 @@ public class JIFAnalista extends javax.swing.JInternalFrame {
 
     private void actualizarSolicitudSeleccionada() {
         for (Solicitud solicitud : this.datosSolicitudes) {
-            if (solicitud.getUrl().equals(this.jListSolicitudes.getSelectedValue())) {
+            if (solicitud.data_getUrl().equals(this.jListSolicitudes.getSelectedValue())) {
                 this.solicitudSeleccionada = solicitud;
                 break;
             }

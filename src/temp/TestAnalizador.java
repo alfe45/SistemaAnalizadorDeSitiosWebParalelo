@@ -1,8 +1,7 @@
 package temp;
 
-import Domain.Analizador.Solicitud;
 import Domain.Analizador.AnalizadorURL;
-import Domain.Sistema.UsuarioExaminador;
+import Domain.Analizador.Solicitud;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -20,20 +19,16 @@ public class TestAnalizador {
     }
 
     public static void test() throws IOException, NoSuchAlgorithmException, KeyManagementException {
-//        System.out.println("Test Modulo Analizador\n");
-//
-//        AnalizadorURL moduloAnalizador = new AnalizadorURL();
-//
-//        UsuarioExaminador usuarioAnalista = new UsuarioExaminador("Alex", "1234");
-//        moduloAnalizador.setAnalista(usuarioAnalista);
-//
-//        String url1 = "https://es.wikipedia.org/wiki/Marte_(planeta)";
-//        Solicitud solicitud1 = new Solicitud(url1, true, false, false);
-//        String url2 = "https://es.wikipedia.org/wiki/Marco_Aurelio";
-//        Solicitud solicitud2 = new Solicitud(url2, true, false, false);
-//
-//        moduloAnalizador.crearAnalisisSolicitud(solicitud1, 1, 1);
-
+        String url = "https://www.last.fm/es/user/Al_fe_45";
+        Solicitud solicitud = new Solicitud(url, true,
+                false, 
+                false, 
+                false, 
+                false);
+        
+        AnalizadorURL analizadorURL = new AnalizadorURL();
+        analizadorURL.analizarSolicitud(solicitud, 1, 1);
+        
     }
 
 }//class
