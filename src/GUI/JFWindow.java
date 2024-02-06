@@ -49,7 +49,7 @@ public class JFWindow extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuFile = new javax.swing.JMenu();
         jMenuItemGestionUsuarios = new javax.swing.JMenuItem();
-        jMenuItemCrearSolicitud = new javax.swing.JMenuItem();
+        jMenuItemGestionDigitador = new javax.swing.JMenuItem();
         jMenuItemGestionAnalisis = new javax.swing.JMenuItem();
         jMenuItemGestionSolicitudes = new javax.swing.JMenuItem();
         jMenuItemLogOut = new javax.swing.JMenuItem();
@@ -68,13 +68,13 @@ public class JFWindow extends javax.swing.JFrame {
         });
         jMenuFile.add(jMenuItemGestionUsuarios);
 
-        jMenuItemCrearSolicitud.setText("Crear Solicitud de Análisis");
-        jMenuItemCrearSolicitud.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItemGestionDigitador.setText("Gestión Digitador");
+        jMenuItemGestionDigitador.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemCrearSolicitudActionPerformed(evt);
+                jMenuItemGestionDigitadorActionPerformed(evt);
             }
         });
-        jMenuFile.add(jMenuItemCrearSolicitud);
+        jMenuFile.add(jMenuItemGestionDigitador);
 
         jMenuItemGestionAnalisis.setText("Gestión de Análisis");
         jMenuItemGestionAnalisis.addActionListener(new java.awt.event.ActionListener() {
@@ -125,12 +125,12 @@ public class JFWindow extends javax.swing.JFrame {
         this.add(jIFAdministrador);
     }//GEN-LAST:event_jMenuItemGestionUsuariosActionPerformed
 
-    private void jMenuItemCrearSolicitudActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemCrearSolicitudActionPerformed
+    private void jMenuItemGestionDigitadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemGestionDigitadorActionPerformed
         // TODO add your handling code here:
-        jMenuItemCrearSolicitud.setEnabled(false);
+        jMenuItemGestionDigitador.setEnabled(false);
         JFWindow.jIFDigitador = new JIFDigitador();
         this.add(jIFDigitador);
-    }//GEN-LAST:event_jMenuItemCrearSolicitudActionPerformed
+    }//GEN-LAST:event_jMenuItemGestionDigitadorActionPerformed
 
     private void jMenuItemGestionAnalisisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemGestionAnalisisActionPerformed
         // TODO add your handling code here:
@@ -183,8 +183,8 @@ public class JFWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMenuFile;
-    private javax.swing.JMenuItem jMenuItemCrearSolicitud;
     private javax.swing.JMenuItem jMenuItemGestionAnalisis;
+    private javax.swing.JMenuItem jMenuItemGestionDigitador;
     private javax.swing.JMenuItem jMenuItemGestionSolicitudes;
     private javax.swing.JMenuItem jMenuItemGestionUsuarios;
     private javax.swing.JMenuItem jMenuItemLogOut;
@@ -194,7 +194,7 @@ public class JFWindow extends javax.swing.JFrame {
         this.jF_jMenuBar = this.jMenuBar1;
         this.jF_jMenuFile = this.jMenuFile;
         this.jF_jMenuItemGestionUsuarios = this.jMenuItemGestionUsuarios;
-        this.jF_jMenuItemCrearSolicitud = this.jMenuItemCrearSolicitud;
+        this.jF_jMenuItemCrearSolicitud = this.jMenuItemGestionDigitador;
         this.jF_jMenuItemGestionAnalisis = this.jMenuItemGestionAnalisis;
         this.jF_jMenuItemGestionSolicitudes = this.jMenuItemGestionSolicitudes;
         this.jF_jMenuItemLogOut = this.jMenuItemLogOut;

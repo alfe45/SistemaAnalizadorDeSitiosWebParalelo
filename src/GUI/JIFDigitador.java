@@ -2,13 +2,17 @@ package GUI;
 
 import Domain.Analizador.Solicitud;
 import Domain.Sistema.SistemaSingleton;
+import Utility.GestorCorreo;
 
 import java.awt.Dimension;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 
 public class JIFDigitador extends javax.swing.JInternalFrame {
 
@@ -22,6 +26,8 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
 
     private Thread hiloActualizarGUI;
     protected boolean hiloActualizarGUI_running;
+
+    private File archivo;
 
     public JIFDigitador() {
         initComponents();
@@ -49,7 +55,7 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         jCheckBox1 = new javax.swing.JCheckBox();
         jCheckBox2 = new javax.swing.JCheckBox();
         jCheckBox3 = new javax.swing.JCheckBox();
-        jButtonEnviar = new javax.swing.JButton();
+        jButtonEnviarSolicitud = new javax.swing.JButton();
         jLabelURL = new javax.swing.JLabel();
         jPanelMisSolicitudes = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -70,6 +76,23 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         jButtonAbrirCarpeta = new javax.swing.JButton();
         jButtonVerDatos = new javax.swing.JButton();
         jLabelActualizando = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jTextFieldAsunto = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextAreaContenido = new javax.swing.JTextArea();
+        jLabelNombreArchivo = new javax.swing.JLabel();
+        jButtonSeleccionarArchivo = new javax.swing.JButton();
+        jButtonEnviarCorreo = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jListDestinatarios = new javax.swing.JList<>();
+        jLabelAsunto = new javax.swing.JLabel();
+        jLabelDestinatario = new javax.swing.JLabel();
+        jLabelContenido1 = new javax.swing.JLabel();
+        jButtonAgregarDestinatario = new javax.swing.JButton();
+        jTextFieldDestinatario = new javax.swing.JTextField();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTextAreaCorreosEnviados = new javax.swing.JTextArea();
 
         setClosable(true);
         setIconifiable(true);
@@ -120,10 +143,10 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
             }
         });
 
-        jButtonEnviar.setText("Enviar");
-        jButtonEnviar.addActionListener(new java.awt.event.ActionListener() {
+        jButtonEnviarSolicitud.setText("Enviar");
+        jButtonEnviarSolicitud.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEnviarActionPerformed(evt);
+                jButtonEnviarSolicitudActionPerformed(evt);
             }
         });
 
@@ -139,7 +162,7 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                 .addGroup(jPanelCrearSolicitudLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCrearSolicitudLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonEnviar))
+                        .addComponent(jButtonEnviarSolicitud))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCrearSolicitudLayout.createSequentialGroup()
                         .addComponent(jLabelURL)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 205, Short.MAX_VALUE)
@@ -163,8 +186,8 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                 .addComponent(jCheckBox2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBox3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 270, Short.MAX_VALUE)
-                .addComponent(jButtonEnviar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 295, Short.MAX_VALUE)
+                .addComponent(jButtonEnviarSolicitud)
                 .addContainerGap())
         );
 
@@ -362,6 +385,138 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
 
         jTabbedPane1.addTab("Mis solicitudes", jPanelMisSolicitudes);
 
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        jTextAreaContenido.setColumns(20);
+        jTextAreaContenido.setRows(5);
+        jScrollPane2.setViewportView(jTextAreaContenido);
+
+        jLabelNombreArchivo.setForeground(new java.awt.Color(0, 0, 0));
+        jLabelNombreArchivo.setText("NombreArchivo");
+
+        jButtonSeleccionarArchivo.setText("Agregar Archivo");
+        jButtonSeleccionarArchivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSeleccionarArchivoActionPerformed(evt);
+            }
+        });
+
+        jButtonEnviarCorreo.setText("Enviar");
+        jButtonEnviarCorreo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEnviarCorreoActionPerformed(evt);
+            }
+        });
+
+        jListDestinatarios.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jListDestinatarios.setEnabled(false);
+        jScrollPane3.setViewportView(jListDestinatarios);
+
+        jLabelAsunto.setForeground(new java.awt.Color(0, 0, 0));
+        jLabelAsunto.setText("Asunto:");
+
+        jLabelDestinatario.setForeground(new java.awt.Color(0, 0, 0));
+        jLabelDestinatario.setText("Destinatario:");
+
+        jLabelContenido1.setForeground(new java.awt.Color(0, 0, 0));
+        jLabelContenido1.setText("Contenido:");
+
+        jButtonAgregarDestinatario.setText("+");
+        jButtonAgregarDestinatario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAgregarDestinatarioActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonEnviarCorreo))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabelContenido1, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(35, 35, 35)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabelNombreArchivo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButtonSeleccionarArchivo))
+                            .addComponent(jScrollPane2)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelAsunto)
+                            .addComponent(jLabelDestinatario))
+                        .addGap(37, 37, 37)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextFieldDestinatario)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+                            .addComponent(jTextFieldAsunto))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonAgregarDestinatario)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelDestinatario)
+                    .addComponent(jTextFieldDestinatario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonAgregarDestinatario))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabelAsunto)
+                        .addGap(6, 6, 6))
+                    .addComponent(jTextFieldAsunto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane2)
+                    .addComponent(jLabelContenido1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonSeleccionarArchivo)
+                    .addComponent(jLabelNombreArchivo))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonEnviarCorreo)
+                .addContainerGap())
+        );
+
+        jTextAreaCorreosEnviados.setColumns(20);
+        jTextAreaCorreosEnviados.setRows(5);
+        jScrollPane4.setViewportView(jTextAreaCorreosEnviados);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Enviar Correos", jPanel2);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -401,7 +556,7 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jCheckBox3ActionPerformed
 
-    private void jButtonEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnviarActionPerformed
+    private void jButtonEnviarSolicitudActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnviarSolicitudActionPerformed
         // TODO add your handling code here:
         if (this.jTextFieldURL.getText().isBlank()) {
             JOptionPane.showMessageDialog(this, "La url está vacía", "Advertencia", JOptionPane.WARNING_MESSAGE);
@@ -430,7 +585,7 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
             }
 
         }
-    }//GEN-LAST:event_jButtonEnviarActionPerformed
+    }//GEN-LAST:event_jButtonEnviarSolicitudActionPerformed
 
     private void formInternalFrameClosed(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosed
         // TODO add your handling code here:
@@ -494,9 +649,101 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldEstado_DigitadorActionPerformed
 
+    private void jButtonSeleccionarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSeleccionarArchivoActionPerformed
+        // TODO add your handling code here:
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new FileFilter() {
+            public String getDescription() {
+                return "PDF Documents (*.pdf)";
+            }
+
+            public boolean accept(File f) {
+                if (f.isDirectory()) {
+                    return true;
+                } else {
+                    return f.getName().toLowerCase().endsWith(".pdf");
+                }
+            }
+        });
+
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        if (chooser.showOpenDialog(this) != JFileChooser.CANCEL_OPTION) {
+            this.archivo = chooser.getSelectedFile();
+            if (this.archivo.getName().endsWith("pdf")) {
+                jLabelNombreArchivo.setText(this.archivo.getName());
+            } else {
+                JOptionPane.showMessageDialog(this, "Solo se pueden elegir archivos en formato PDF");
+            }
+        }
+
+
+    }//GEN-LAST:event_jButtonSeleccionarArchivoActionPerformed
+
+    private void jButtonEnviarCorreoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnviarCorreoActionPerformed
+        // TODO add your handling code here:
+
+        if (archivo != null) {
+            if (this.jListDestinatarios.getModel().getSize() == 0) {
+                JOptionPane.showMessageDialog(this, "Agregue un destinatario", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            } else {
+                for (int i = 0; i < this.jListDestinatarios.getModel().getSize(); i++) {
+                    if (GestorCorreo.sendEmail(this.jListDestinatarios.getModel().getElementAt(i), this.jTextFieldAsunto.getText(), this.jTextAreaContenido.getText(), archivo)) {
+                        System.out.println("Correo enviado  " + i);
+                    } else {
+                        System.out.println("Correo no enviado  " + i);
+                    }
+                }
+                this.jTextFieldAsunto.setText("");
+                this.jTextAreaContenido.setText("");
+                this.jLabelNombreArchivo.setText("");
+                this.archivo = null;
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Seleccione un archivo", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_jButtonEnviarCorreoActionPerformed
+
+    private void jButtonAgregarDestinatarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgregarDestinatarioActionPerformed
+        // TODO add your handling code here:
+        String text = this.jTextFieldDestinatario.getText();
+        if (!text.isBlank()) {
+            if (text.contains("@")) {
+                String[] strings = new String[this.jListDestinatarios.getModel().getSize() + 1];
+                for (int i = 0; i < this.jListDestinatarios.getModel().getSize(); i++) {
+                    strings[i] = this.jListDestinatarios.getModel().getElementAt(i);
+                }
+                strings[this.jListDestinatarios.getModel().getSize()] = "last";
+                boolean exists = false;
+                for (String string : strings) {
+                    if (string.equals(text)) {
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    strings[this.jListDestinatarios.getModel().getSize()] = text;
+                }
+                jListDestinatarios.setModel(new javax.swing.AbstractListModel<String>() {
+
+                    public int getSize() {
+                        return strings.length;
+                    }
+
+                    public String getElementAt(int i) {
+                        return strings[i];
+                    }
+                });
+                this.jTextFieldDestinatario.setText("");
+            }
+        }
+    }//GEN-LAST:event_jButtonAgregarDestinatarioActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAbrirCarpeta;
-    private javax.swing.JButton jButtonEnviar;
+    private javax.swing.JButton jButtonAgregarDestinatario;
+    private javax.swing.JButton jButtonEnviarCorreo;
+    private javax.swing.JButton jButtonEnviarSolicitud;
+    private javax.swing.JButton jButtonSeleccionarArchivo;
     private javax.swing.JButton jButtonVerDatos;
     private javax.swing.JButton jButtonVerGrafico;
     private javax.swing.JCheckBox jCheckBox1;
@@ -506,18 +753,32 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
     private javax.swing.JCheckBox jCheckBox5;
     private javax.swing.JCheckBox jCheckBox6;
     private javax.swing.JLabel jLabelActualizando;
+    private javax.swing.JLabel jLabelAsunto;
+    private javax.swing.JLabel jLabelContenido1;
+    private javax.swing.JLabel jLabelDestinatario;
     private javax.swing.JLabel jLabelEstado_Analista;
     private javax.swing.JLabel jLabelEstado_Digitador;
     private javax.swing.JLabel jLabelEstado_Estado;
     private javax.swing.JLabel jLabelEstado_URL;
+    private javax.swing.JLabel jLabelNombreArchivo;
     private javax.swing.JLabel jLabelURL;
+    private javax.swing.JList<String> jListDestinatarios;
     private javax.swing.JList<String> jListSolicitudes;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanelCrearSolicitud;
     private javax.swing.JPanel jPanelMisSolicitudes;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextArea jTextAreaContenido;
+    private javax.swing.JTextArea jTextAreaCorreosEnviados;
+    private javax.swing.JTextField jTextFieldAsunto;
+    private javax.swing.JTextField jTextFieldDestinatario;
     private javax.swing.JTextField jTextFieldEstado_Analista;
     private javax.swing.JTextField jTextFieldEstado_Digitador;
     private javax.swing.JTextField jTextFieldEstado_Estado;
