@@ -4,8 +4,9 @@ import Domain.Analizador.Solicitud;
 import Domain.Sistema.SistemaSingleton;
 import Utility.Encryptor;
 import Utility.GestorCorreo;
+import Utility.PDFPrinter;
+import Utility.Utility;
 import java.awt.Desktop;
-
 import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +33,7 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
 
     private Thread hiloActualizarGUI;
     protected boolean hiloActualizarGUI_running;
-    
+
     private Solicitud solicitudSeleccionada;
 
     private File archivo;
@@ -44,8 +45,6 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         this.setLocation((jfSize.width - jifSize.width) / 2, (((jfSize.height - JFWindow.getInstance().jF_jMenuBar.getHeight()) - jifSize.height) / 2));
         this.show();
         this.jLabelActualizando.setText("");
-        this.jCheckBoxEnlaces.setVisible(false);
-        this.jCheckBoxImagenes.setVisible(false);
         initThreads();
     }
 
@@ -63,12 +62,12 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         jPanelCrearSolicitud = new javax.swing.JPanel();
         jTextFieldURL = new javax.swing.JTextField();
         jCheckBox1 = new javax.swing.JCheckBox();
-        jCheckBox2 = new javax.swing.JCheckBox();
         jCheckBox3 = new javax.swing.JCheckBox();
         jButtonEnviarSolicitud = new javax.swing.JButton();
         jLabelURL = new javax.swing.JLabel();
         jCheckBoxEnlaces = new javax.swing.JCheckBox();
         jCheckBoxImagenes = new javax.swing.JCheckBox();
+        jLabelAnalisis2CrearSolicitud = new javax.swing.JLabel();
         jPanelMisSolicitudes = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jListSolicitudes = new javax.swing.JList<>();
@@ -78,7 +77,6 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         jLabelEstado_Estado = new javax.swing.JLabel();
         jTextFieldEstado_Estado = new javax.swing.JTextField();
         jCheckBox4 = new javax.swing.JCheckBox();
-        jCheckBox5 = new javax.swing.JCheckBox();
         jCheckBox6 = new javax.swing.JCheckBox();
         jLabelEstado_Analista = new javax.swing.JLabel();
         jLabelEstado_Digitador = new javax.swing.JLabel();
@@ -95,6 +93,8 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         jTextFieldGestor = new javax.swing.JTextField();
         jButtonVerGraficoAnalisis2 = new javax.swing.JButton();
         jButtonGuardarPDF = new javax.swing.JButton();
+        jComboBoxTipoDeGrafico = new javax.swing.JComboBox<>();
+        jLabelAnalisis2CrearSolicitud1 = new javax.swing.JLabel();
         jLabelActualizando = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
@@ -148,14 +148,6 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         jCheckBox1.setForeground(new java.awt.Color(0, 0, 0));
         jCheckBox1.setText("Análisis de Elementos");
 
-        jCheckBox2.setForeground(new java.awt.Color(0, 0, 0));
-        jCheckBox2.setText("Análisis de Elementos y Extracción");
-        jCheckBox2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox2ActionPerformed(evt);
-            }
-        });
-
         jCheckBox3.setForeground(new java.awt.Color(0, 0, 0));
         jCheckBox3.setText("Análisis de Elementos y Comparación");
         jCheckBox3.addActionListener(new java.awt.event.ActionListener() {
@@ -180,6 +172,9 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         jCheckBoxImagenes.setForeground(new java.awt.Color(0, 0, 0));
         jCheckBoxImagenes.setText("Imágenes");
 
+        jLabelAnalisis2CrearSolicitud.setForeground(new java.awt.Color(0, 0, 0));
+        jLabelAnalisis2CrearSolicitud.setText("Análisis de Elementos y Extracción:");
+
         javax.swing.GroupLayout jPanelCrearSolicitudLayout = new javax.swing.GroupLayout(jPanelCrearSolicitud);
         jPanelCrearSolicitud.setLayout(jPanelCrearSolicitudLayout);
         jPanelCrearSolicitudLayout.setHorizontalGroup(
@@ -195,14 +190,14 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
                         .addGroup(jPanelCrearSolicitudLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jCheckBox1)
-                            .addComponent(jCheckBox2)
                             .addComponent(jCheckBox3)
+                            .addComponent(jTextFieldURL, javax.swing.GroupLayout.PREFERRED_SIZE, 486, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanelCrearSolicitudLayout.createSequentialGroup()
                                 .addGap(21, 21, 21)
                                 .addGroup(jPanelCrearSolicitudLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jCheckBoxImagenes)
                                     .addComponent(jCheckBoxEnlaces)))
-                            .addComponent(jTextFieldURL, javax.swing.GroupLayout.PREFERRED_SIZE, 486, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jLabelAnalisis2CrearSolicitud))))
                 .addContainerGap())
         );
         jPanelCrearSolicitudLayout.setVerticalGroup(
@@ -214,9 +209,9 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                     .addComponent(jLabelURL))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBox1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBox2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabelAnalisis2CrearSolicitud)
+                .addGap(4, 4, 4)
                 .addComponent(jCheckBoxEnlaces)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBoxImagenes)
@@ -273,15 +268,6 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         jCheckBox4.setForeground(new java.awt.Color(0, 0, 0));
         jCheckBox4.setText("Análisis de Elementos");
         jCheckBox4.setEnabled(false);
-
-        jCheckBox5.setForeground(new java.awt.Color(0, 0, 0));
-        jCheckBox5.setText("Análisis de Elementos y Extracción");
-        jCheckBox5.setEnabled(false);
-        jCheckBox5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox5ActionPerformed(evt);
-            }
-        });
 
         jCheckBox6.setForeground(new java.awt.Color(0, 0, 0));
         jCheckBox6.setText("Análisis de Elementos y Comparación");
@@ -360,13 +346,24 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
             }
         });
 
-        jButtonGuardarPDF.setText("Guadar PDF");
+        jButtonGuardarPDF.setText("Guardar PDF");
         jButtonGuardarPDF.setEnabled(false);
         jButtonGuardarPDF.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonGuardarPDFActionPerformed(evt);
             }
         });
+
+        jComboBoxTipoDeGrafico.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Gráfico de barras", "Gráfico pastel" }));
+        jComboBoxTipoDeGrafico.setEnabled(false);
+        jComboBoxTipoDeGrafico.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxTipoDeGraficoActionPerformed(evt);
+            }
+        });
+
+        jLabelAnalisis2CrearSolicitud1.setForeground(new java.awt.Color(0, 0, 0));
+        jLabelAnalisis2CrearSolicitud1.setText("Análisis de Elementos y Extracción:");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -382,45 +379,47 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                         .addComponent(jButtonVerGraficoAnalisis1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jSeparator2)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jCheckBox5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabelAnalisis2CrearSolicitud1)
+                        .addGap(26, 26, 26)
                         .addComponent(jCheckBoxImagenesMostrar)
                         .addGap(18, 18, 18)
                         .addComponent(jCheckBoxEnlacesMostrar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonVerGraficoAnalisis2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButtonAbrirCarpeta)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonAbrirCarpeta))
+                        .addComponent(jButtonVerGraficoAnalisis2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabelEstado_Analista)
+                        .addGap(25, 25, 25)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jTextFieldEstado_Estado, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFieldAnalista, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelEstado_Digitador)
+                            .addComponent(jLabelEstado_Digitador1))
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabelEstado_Estado)
-                                    .addComponent(jLabelEstado_URL))
-                                .addGap(32, 32, 32)
-                                .addComponent(jTextFieldEstado_URL, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jTextFieldGestor, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabelEstado_Analista)
-                                .addGap(25, 25, 25)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jTextFieldEstado_Estado, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextFieldAnalista, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabelEstado_Digitador)
-                                    .addComponent(jLabelEstado_Digitador1))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextFieldGestor, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextFieldDigitador, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                                .addComponent(jTextFieldDigitador, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jComboBoxTipoDeGrafico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addComponent(jCheckBox6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonVerDatos, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonGuardarPDF, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jButtonGuardarPDF, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelEstado_Estado)
+                            .addComponent(jLabelEstado_URL))
+                        .addGap(32, 32, 32)
+                        .addComponent(jTextFieldEstado_URL)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -435,13 +434,15 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                     .addComponent(jLabelEstado_Estado)
                     .addComponent(jTextFieldEstado_Estado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabelEstado_Digitador)
-                    .addComponent(jTextFieldDigitador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldDigitador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBoxTipoDeGrafico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelEstado_Analista)
-                    .addComponent(jTextFieldAnalista, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabelEstado_Digitador1)
-                    .addComponent(jTextFieldGestor, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextFieldGestor, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabelEstado_Analista)
+                        .addComponent(jTextFieldAnalista, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabelEstado_Digitador1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonVerGraficoAnalisis1)
@@ -449,13 +450,14 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox5)
-                    .addComponent(jButtonAbrirCarpeta)
-                    .addComponent(jCheckBoxImagenesMostrar)
-                    .addComponent(jCheckBoxEnlacesMostrar)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jCheckBoxImagenesMostrar)
+                        .addComponent(jCheckBoxEnlacesMostrar)
+                        .addComponent(jButtonAbrirCarpeta)
+                        .addComponent(jLabelAnalisis2CrearSolicitud1))
                     .addComponent(jButtonVerGraficoAnalisis2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(8, 8, 8)
                 .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -463,7 +465,7 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                     .addComponent(jButtonVerDatos))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonGuardarPDF)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         jLabelActualizando.setForeground(new java.awt.Color(0, 0, 0));
@@ -487,9 +489,9 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
             jPanelMisSolicitudesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelMisSolicitudesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabelActualizando)
                 .addContainerGap())
@@ -684,20 +686,6 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
-        // TODO add your handling code here:
-        if (!this.jCheckBoxEnlaces.isVisible()) {
-            this.jCheckBoxEnlaces.setVisible(true);
-        } else {
-            this.jCheckBoxEnlaces.setVisible(false);
-        }
-        if (!this.jCheckBoxImagenes.isVisible()) {
-            this.jCheckBoxImagenes.setVisible(true);
-        } else {
-            this.jCheckBoxImagenes.setVisible(false);
-        }
-    }//GEN-LAST:event_jCheckBox2ActionPerformed
-
     private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jCheckBox3ActionPerformed
@@ -707,40 +695,32 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
         if (this.jTextFieldURL.getText().isBlank()) {
             JOptionPane.showMessageDialog(this, "La url está vacía", "Advertencia", JOptionPane.WARNING_MESSAGE);
         } else {
-            if (this.jCheckBoxEnlaces.isSelected() || this.jCheckBoxImagenes.isSelected()) {
-                Solicitud solicitud = new Solicitud(
-                        this.jTextFieldURL.getText(),
-                        this.jCheckBox1.isSelected(),
-                        this.jCheckBox2.isSelected(),
-                        this.jCheckBoxImagenes.isSelected(),
-                        this.jCheckBoxEnlaces.isSelected(),
-                        this.jCheckBox3.isSelected());
-                solicitud.data_setDigitador(SistemaSingleton.getInstance().getUsuario().getUsername());
-                if (solicitud.esValida()) {
-                    if (SistemaSingleton.getInstance().urlValida(solicitud.data_getUrl())) {
-                        if (SistemaSingleton.getInstance().agregarSolicitud(solicitud)) {
-                            JOptionPane.showMessageDialog(this, "Solicitud enviada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                            this.jTextFieldURL.setText("");
-                            this.jCheckBox1.setSelected(false);
-                            this.jCheckBox2.setSelected(false);
-                            this.jCheckBox3.setSelected(false);
-                            this.jCheckBoxImagenes.setSelected(false);
-                            this.jCheckBoxEnlaces.setSelected(false);
-                            this.jCheckBoxImagenes.setVisible(false);
-                            this.jCheckBoxEnlaces.setVisible(false);
-                        } else {
-                            JOptionPane.showMessageDialog(this, "Solicitud no enviada", "Error", JOptionPane.ERROR_MESSAGE);
-                        }
+            Solicitud solicitud = new Solicitud(
+                    this.jTextFieldURL.getText(),
+                    this.jCheckBox1.isSelected(),
+                    this.jCheckBoxEnlaces.isSelected() || this.jCheckBoxEnlaces.isSelected(),
+                    this.jCheckBoxImagenes.isSelected(),
+                    this.jCheckBoxEnlaces.isSelected(),
+                    this.jCheckBox3.isSelected());
+            solicitud.data_setDigitador(SistemaSingleton.getInstance().getUsuario().getUsername());
+            if (solicitud.esValida()) {
+                if (SistemaSingleton.getInstance().urlValida(solicitud.data_getUrl())) {
+                    if (SistemaSingleton.getInstance().agregarSolicitud(solicitud)) {
+                        JOptionPane.showMessageDialog(this, "Solicitud enviada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        this.jTextFieldURL.setText("");
+                        this.jCheckBox1.setSelected(false);
+                        this.jCheckBox3.setSelected(false);
+                        this.jCheckBoxImagenes.setSelected(false);
+                        this.jCheckBoxEnlaces.setSelected(false);
                     } else {
-                        JOptionPane.showMessageDialog(this, "Url inválida", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Solicitud no enviada", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
-                    JOptionPane.showMessageDialog(this, "Selecione al menos un tipo de análisis", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Url inválida", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Seleccione al menos un tipo de elemento a extraer", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Selecione al menos un tipo de análisis", "Advertencia", JOptionPane.WARNING_MESSAGE);
             }
-
         }
     }//GEN-LAST:event_jButtonEnviarSolicitudActionPerformed
 
@@ -752,12 +732,16 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
 
     private void jButtonVerGraficoAnalisis1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonVerGraficoAnalisis1ActionPerformed
         // TODO add your handling code here:
+        String grafico = this.jComboBoxTipoDeGrafico.getSelectedItem().toString();
+        if (grafico.equals("Gráfico de barras")) {
+            Grafico.crearGraficoAnalisis1(Utility.GRAFICO_BARRAS, solicitudSeleccionada);
+        }
+
+        if (grafico.equals("Gráfico pastel")) {
+            Grafico.crearGraficoAnalisis1(Utility.GRAFICO_PASTEL, solicitudSeleccionada);
+        }
 
     }//GEN-LAST:event_jButtonVerGraficoAnalisis1ActionPerformed
-
-    private void jCheckBox5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox5ActionPerformed
 
     private void jCheckBox6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox6ActionPerformed
         // TODO add your handling code here:
@@ -780,38 +764,61 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
                     this.jTextFieldDigitador.setText(solicitud.data_getDigitador());
                     this.jTextFieldGestor.setText(solicitud.data_getGestor());
                     this.jCheckBox4.setSelected(solicitud.doAnalisis1());
-                    this.jCheckBox5.setSelected(solicitud.doAnalisis2());
                     this.jCheckBox6.setSelected(solicitud.doAnalisis3());
                     this.jCheckBoxEnlacesMostrar.setSelected(solicitud.doAnalisis2_extract_links());
                     this.jCheckBoxImagenesMostrar.setSelected(solicitud.doAnalisis2_extract_img());
-                    if (solicitud.data_getEstado().equals(Utility.Utility.ESTADO_FINALIZADO)) {
+                    if (solicitud.data_getEstado().equals(Utility.ESTADO_FINALIZADO)) {
+
                         if (this.jCheckBox4.isSelected()) {
                             this.jButtonVerGraficoAnalisis1.setEnabled(true);
-                        }else{
+                        } else {
                             this.jButtonVerGraficoAnalisis1.setEnabled(false);
+
                         }
-                        
-                        if (this.jCheckBox5.isSelected()) {
-                            this.jButtonAbrirCarpeta.setEnabled(true);
-                        }else{
-                            this.jButtonAbrirCarpeta.setEnabled(false);
+
+                        String carpeta;
+                        try {
+                            carpeta = Encryptor.encrypt(this.solicitudSeleccionada.data_getUrl(), Encryptor.MD2);
+                            File dir = new File("./downloads/" + carpeta);
+                            if (dir.exists()) {
+                                this.jButtonAbrirCarpeta.setEnabled(true);
+                                this.jButtonAbrirCarpeta.setText("Abrir carpeta");
+                            } else {
+                                this.jButtonAbrirCarpeta.setEnabled(false);
+                                this.jButtonAbrirCarpeta.setText("No dir");
+                            }
+                        } catch (NoSuchAlgorithmException ex) {
+                            Logger.getLogger(JIFDigitador.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                        this.jButtonVerGraficoAnalisis2.setEnabled(true);
+
+                        this.jButtonAbrirCarpeta.setEnabled(false);
+
+                        if (this.jCheckBox4.isSelected()
+                                || this.jCheckBoxEnlacesMostrar.isSelected()
+                                || this.jCheckBoxImagenes.isSelected()) {
+                            this.jComboBoxTipoDeGrafico.setEnabled(true);
+                        } else {
+                            this.jComboBoxTipoDeGrafico.setEnabled(false);
+                        }
+
                         if (this.jCheckBox6.isSelected()) {
                             this.jButtonVerDatos.setEnabled(true);
-                        }else{
+                        } else {
                             this.jButtonVerDatos.setEnabled(false);
                         }
-                        
                         this.jButtonGuardarPDF.setEnabled(true);
-                    }else{
+                    } else {
                         this.jButtonVerGraficoAnalisis1.setEnabled(false);
                         this.jButtonAbrirCarpeta.setEnabled(false);
                         this.jButtonVerDatos.setEnabled(false);
                         this.jButtonGuardarPDF.setEnabled(false);
+                        this.jComboBoxTipoDeGrafico.setEnabled(false);
+                        this.jButtonVerGraficoAnalisis2.setEnabled(false);
                     }
                 }
             }
-        }else{
+        } else {
             this.solicitudSeleccionada = null;
         }
     }//GEN-LAST:event_jListSolicitudesValueChanged
@@ -826,15 +833,19 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
             String carpeta = Encryptor.encrypt(this.solicitudSeleccionada.data_getUrl(), Encryptor.MD2);
             //verifica que existe /downloads/carpeta
             //si existe la abre con el windows explorer
-            Desktop.getDesktop().open(new File("./downloads/"+carpeta));
-        
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(JIFDigitador.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+
+            File dir = new File("./downloads/" + carpeta);
+            if (dir.exists()) {
+                Desktop.getDesktop().open(dir);
+            } else {
+                this.jButtonAbrirCarpeta.setEnabled(false);
+                JOptionPane.showMessageDialog(this, "La carpeta fue borrada", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (NoSuchAlgorithmException | IOException ex) {
             Logger.getLogger(JIFDigitador.class.getName()).log(Level.SEVERE, null, ex);
         }
-            this.jButtonAbrirCarpeta.setEnabled(false);
-        
+
     }//GEN-LAST:event_jButtonAbrirCarpetaActionPerformed
 
     private void jButtonVerDatosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonVerDatosActionPerformed
@@ -1008,33 +1019,81 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
     private void jPanel4MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel4MousePressed
         // TODO add your handling code here:
         this.jListSolicitudes.clearSelection();
-        if (this.jListSolicitudes.getSelectedIndex()== -1) {
+        if (this.jListSolicitudes.getSelectedIndex() == -1) {
+            this.solicitudSeleccionada = null;
             this.jButtonVerDatos.setEnabled(false);
             this.jButtonAbrirCarpeta.setEnabled(false);
             this.jButtonVerGraficoAnalisis1.setEnabled(false);
             this.jButtonGuardarPDF.setEnabled(false);
+
+            this.jTextFieldAnalista.setText("");
+            this.jTextFieldEstado_URL.setText("");
+            this.jTextFieldEstado_Estado.setText("");
+            this.jTextFieldAnalista.setText("");
+            this.jTextFieldDigitador.setText("");
+            this.jTextFieldGestor.setText("");
+
+            this.jCheckBoxEnlacesMostrar.setSelected(false);
+            this.jCheckBoxImagenesMostrar.setSelected(false);
+            this.jCheckBox4.setSelected(false);
+            this.jCheckBox6.setSelected(false);
+            this.jComboBoxTipoDeGrafico.setEnabled(false);
+            this.jButtonVerGraficoAnalisis2.setEnabled(false);
         }
-        
+
     }//GEN-LAST:event_jPanel4MousePressed
 
     private void jPanelMisSolicitudesMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelMisSolicitudesMousePressed
         // TODO add your handling code here:
         this.jListSolicitudes.clearSelection();
-        if (this.jListSolicitudes.getSelectedIndex()== -1) {
+        if (this.jListSolicitudes.getSelectedIndex() == -1) {
+            this.solicitudSeleccionada = null;
             this.jButtonVerDatos.setEnabled(false);
             this.jButtonAbrirCarpeta.setEnabled(false);
             this.jButtonVerGraficoAnalisis1.setEnabled(false);
             this.jButtonGuardarPDF.setEnabled(false);
+            this.jTextFieldAnalista.setText("");
+            this.jTextFieldEstado_URL.setText("");
+            this.jTextFieldEstado_Estado.setText("");
+            this.jTextFieldAnalista.setText("");
+            this.jTextFieldDigitador.setText("");
+            this.jTextFieldGestor.setText("");
+
+            this.jCheckBoxEnlacesMostrar.setSelected(false);
+            this.jCheckBoxImagenesMostrar.setSelected(false);
+            this.jCheckBox4.setSelected(false);
+            this.jCheckBox6.setSelected(false);
+            this.jComboBoxTipoDeGrafico.setEnabled(false);
+
+            this.jButtonVerGraficoAnalisis2.setEnabled(false);
         }
     }//GEN-LAST:event_jPanelMisSolicitudesMousePressed
 
     private void jButtonVerGraficoAnalisis2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonVerGraficoAnalisis2ActionPerformed
         // TODO add your handling code here:
+        String grafico = this.jComboBoxTipoDeGrafico.getSelectedItem().toString();
+        if (grafico.equals("Gráfico de barras")) {
+            Grafico.crearGraficoAnalisis2(Utility.GRAFICO_BARRAS, solicitudSeleccionada);
+        }
+
+        if (grafico.equals("Gráfico pastel")) {
+            Grafico.crearGraficoAnalisis2(Utility.GRAFICO_PASTEL, solicitudSeleccionada);
+        }
     }//GEN-LAST:event_jButtonVerGraficoAnalisis2ActionPerformed
 
     private void jButtonGuardarPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGuardarPDFActionPerformed
-        // TODO add your handling code here:
+        if (PDFPrinter.imprimir(solicitudSeleccionada)) {
+            JOptionPane.showMessageDialog(this, "PDF generado", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "PDF no generado", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+
     }//GEN-LAST:event_jButtonGuardarPDFActionPerformed
+
+    private void jComboBoxTipoDeGraficoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTipoDeGraficoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxTipoDeGraficoActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAbrirCarpeta;
@@ -1048,16 +1107,17 @@ public class JIFDigitador extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButtonVerGraficoAnalisis1;
     private javax.swing.JButton jButtonVerGraficoAnalisis2;
     private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JCheckBox jCheckBox4;
-    private javax.swing.JCheckBox jCheckBox5;
     private javax.swing.JCheckBox jCheckBox6;
     private javax.swing.JCheckBox jCheckBoxEnlaces;
     private javax.swing.JCheckBox jCheckBoxEnlacesMostrar;
     private javax.swing.JCheckBox jCheckBoxImagenes;
     private javax.swing.JCheckBox jCheckBoxImagenesMostrar;
+    private javax.swing.JComboBox<String> jComboBoxTipoDeGrafico;
     private javax.swing.JLabel jLabelActualizando;
+    private javax.swing.JLabel jLabelAnalisis2CrearSolicitud;
+    private javax.swing.JLabel jLabelAnalisis2CrearSolicitud1;
     private javax.swing.JLabel jLabelAsunto;
     private javax.swing.JLabel jLabelContenido1;
     private javax.swing.JLabel jLabelDestinatario;
