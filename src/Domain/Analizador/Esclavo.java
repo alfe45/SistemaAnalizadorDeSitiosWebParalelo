@@ -1,33 +1,44 @@
 package Domain.Analizador;
 
+import java.util.Queue;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.jdom.Element;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Esclavo {
 
     private ExecutorService executorService;
-    private Element data;
     private int subprocesos;
-    private static int subprocesosUsados;
+    private int id;
+    private Queue<Runnable> tasks;
 
-    public Esclavo(int subprocesos) {
+    public Esclavo(int subprocesos, int id) {
         this.executorService = Executors.newFixedThreadPool(subprocesos);
         this.subprocesos = subprocesos;
-        this.subprocesosUsados = 0;
-    }
 
-    public boolean execute(Runnable task) {
-        if (subprocesosUsados < subprocesos) {
-            this.executorService.execute(task);
-            this.subprocesosUsados += 1;
-            return true;
-        }
-        return false;
-    }//execute
+        this.id = id;
+        this.tasks = new LinkedBlockingDeque<>(subprocesos);
+    }
 
     public void shutDownExecutorService() {
         this.executorService.close();
     }//shutDownExecutorService
+
+    public boolean addTask(Runnable task) {
+        return this.tasks.offer(task);
+    }//addTask
+
+    public int getId() {
+        return id;
+    }
+
+    public void runTasks() {
+        while (!tasks.isEmpty()) {    
+            this.executorService.execute(tasks.poll());
+        }
+    }//runTasks
 
 }//class

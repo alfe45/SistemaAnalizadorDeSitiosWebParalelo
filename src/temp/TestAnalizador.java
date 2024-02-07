@@ -25,11 +25,11 @@ public class TestAnalizador {
         String url = "https://www.bjjtime.com/Identity/Account/Login?ReturnUrl=%2F";
         Solicitud solicitud = new Solicitud(url, true,
                 false,
-                true,
-                true,
+                false,
+                false,
                 true);
         AnalizadorURL analizadorURL = new AnalizadorURL();
-        analizadorURL.analizarSolicitud(solicitud, 100, 1);
+        analizadorURL.analizarSolicitud(solicitud, 1, 5);
 
 //        File dir = new File("./downloads");
 //        if (!dir.exists()) {

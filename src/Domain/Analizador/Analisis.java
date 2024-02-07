@@ -38,7 +38,7 @@ public class Analisis extends Thread {
         this.esclavos = new ArrayList<>();
         this.tasks = new ArrayList<>();
         for (int i = 0; i < esclavos; i++) {
-            this.esclavos.add(new Esclavo(subprocesos));
+            this.esclavos.add(new Esclavo(subprocesos, i + 1));
         }
         this.data_analisis1 = new org.jdom.Element(Utility.ANALISIS1);
         this.data_analisis2 = new org.jdom.Element(Utility.ANALISIS2);
@@ -329,21 +329,23 @@ public class Analisis extends Thread {
 
     private boolean runTasks() {
         this.running = true;
-        int tasksSize = tasks.size();
-        while (startedTasks < tasksSize) {
+        while (!this.tasks.isEmpty()) {
             for (Esclavo esclavo : esclavos) {
                 for (Runnable task : tasks) {
-                    if (esclavo.execute(task)) {
-                        startedTasks++;
-                        System.out.println("Started tasks: " + startedTasks);
-                        tasks.remove(task);
+                    if (esclavo.addTask(task)) {
+                        System.out.println("Task agregada a esclavo " + esclavo.getId());
+                        this.tasks.remove(task);
+                        break;
                     }
-                    break;
                 }
-                break;
+            }
+            for (Esclavo esclavo : esclavos) {
+                esclavo.runTasks();
             }
         }
-        System.out.println("");
+        for (Esclavo esclavo : esclavos) {
+            esclavo.shutDownExecutorService();
+        }
         return true;
     }//runTasks
 

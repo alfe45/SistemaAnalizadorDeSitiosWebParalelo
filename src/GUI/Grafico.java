@@ -57,8 +57,6 @@ public class Grafico {
         ChartFrame frame = new ChartFrame("Grafica", chart);
         frame.pack();
         frame.setVisible(true);
-        System.out.println("final");
-
     }//initPastelAnalisis1
 
     private static void initBarrasAnalisis1(int[] datos) {
@@ -163,7 +161,6 @@ public class Grafico {
         ChartFrame frame = new ChartFrame("Grafica", chart);
         frame.pack();
         frame.setVisible(true);
-        System.out.println("final");
     }//initPastelAnalisis2
 
 }//class
