@@ -177,8 +177,19 @@ public class SistemaSingleton {
         return false;
     }//crearAnalisisSolicitud
 
-    public void agregarSolicitud2(Solicitud solicitud, boolean enlaces, boolean imagenes) {
-
-    }
+    public boolean sobreEscribirSolicitud(Solicitud solicitud) {
+        if (solicitud.esValida()) {
+            try {
+                return this.solicitudBusiness.overrideSolicitud(solicitud);
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(SistemaSingleton.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (KeyManagementException ex) {
+                Logger.getLogger(SistemaSingleton.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(SistemaSingleton.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return false;
+    }//sobreEscribirSolicitud
 
 }//class

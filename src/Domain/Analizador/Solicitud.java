@@ -50,28 +50,6 @@ public class Solicitud {
 
     }
 
-//    public Solicitud(String estado, String url, String digitador, String gestor, String analista, boolean analisis1, boolean analisis2, boolean analisis3) {
-//        this.url = url;
-//        this.analisis = new boolean[3];
-//        this.analisis[0] = analisis1;
-//        this.analisis[1] = analisis2;
-//        this.analisis[2] = analisis3;
-//        this.digitador = digitador;
-//        this.gestor = gestor;
-//        this.analista = analista;
-//        this.estado = estado;
-//    }
-//    public Solicitud(String estado, String url, String digitador, String gestor, String analista, boolean analisis1, boolean analisis2, boolean analisis3, Element resultado) {
-//        this.url = url;
-//        this.analisis = new boolean[3];
-//        this.analisis[0] = analisis1;
-//        this.analisis[1] = analisis2;
-//        this.analisis[2] = analisis3;
-//        this.digitador = digitador;
-//        this.gestor = gestor;
-//        this.analista = analista;
-//        this.estado = estado;
-//    }
     public Element getData() {
         return data;
     }

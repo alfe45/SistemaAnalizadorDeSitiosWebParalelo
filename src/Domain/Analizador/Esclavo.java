@@ -25,9 +25,9 @@ public class Esclavo {
         }
         return false;
     }//execute
-    
-    public static void endedTask(){
-        subprocesosUsados -= 1;
-    }//endedTask
+
+    public void shutDownExecutorService() {
+        this.executorService.close();
+    }//shutDownExecutorService
 
 }//class

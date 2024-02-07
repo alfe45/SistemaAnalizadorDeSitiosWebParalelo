@@ -35,10 +35,12 @@ public class Utility {
     public static final String LINKS = "links";
     public static final String IMAGES = "images";
     public static final String TABLES = "tables";
+    public static final String LINK = "link";
 
     public static final String CANTIDAD = "cantidad";
 
     public static final String ATTRI_SRC = "abs:src";
+    public static final String ATTRI_HREF = "abs:href";
 
     public static final String HACER = "hacer";
     public static final String ANALISIS1 = "analisis_elementos";
@@ -65,4 +67,7 @@ public class Utility {
     public static final String NO_ASIGNADO = "noAsignado";
 
     public static final String RESULTADO = "resultado";
+    
+    public static final String IMAGENES = "imagenes";
+    
 }//class
